@@ -1,0 +1,30 @@
+.app-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.header-container {
+    background-color: #2E86AB;
+}
+.query-selector-container {
+    background-color: #F39237;
+}
+.lineage-canvas-container {
+    background-color: #EAF0CE;
+}
+.display-ctrl-panel-container {
+    background-color: #F39237;
+}
+
+button {
+    color: #fff;
+    background-color: #eb6100;
+    width: 120px;
+    margin: 10px;
+    border-radius: 5px;
+    padding: 5px;
+}
+button:hover {
+    color: #fff;
+    background: #f56500;
+}

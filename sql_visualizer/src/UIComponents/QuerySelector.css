@@ -1,0 +1,39 @@
+.query-selector-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    z-index:100;
+}
+.div-drop-zone {
+    border-width: 5px;
+    border-color: transparent;
+    border-radius: 10px;
+    padding: 10px;
+}
+.div-drag-active {
+    border-color: #33f9;
+    border-style: dashed;
+}
+
+.button-enter-query {
+    padding: 10px;
+}
+
+.query-input-area {
+    width: 500px;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background-color: #fff;
+    padding: 5px;
+}
+.query-input-textarea {
+    width: 100%;
+    height: 100%;
+    padding: 5px;
+
+    border: 2px solid #999;
+    border-radius: 5px;
+}
