@@ -6,10 +6,9 @@ import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import { TableStruct } from "@QueryComponents/TableStruct";
 import { TableStructQuery, getTableStructQueryObj } from "@QueryComponents/TableStructQuery";
 import { TableStructQueryBox } from "./CanvasComponents/TableStructQueryBox";
+import { AST_PADDING } from "./CanvasComponents/constCanvasComponents";
 
 import "./LineageCanvas.css";
-
-const AST_PADDING: number = 10;
 
 interface LineageCanvasProps {
     astList: AST[];
@@ -26,21 +25,22 @@ function LineageCanvas({ astList }: LineageCanvasProps) {
         // 幅は、左右とast同士の隙間を除いて、等分
         setAstWidths(astList.map(()=>(svgWidth - AST_PADDING*2 - AST_PADDING*(astList.length-1))/(astList.length)));
         setAstHeights(astList.map(()=>(svgHeight-AST_PADDING*2)));
-    }, []);
+    }, [astList]);
 
     // ASTから、TableStructQueryへ変換
     // 元のtableStrutsは初期化される
     useEffect(() => {
-        const tmpTableStructsQueryList: TableStructQuery[] = [];
-        astList.forEach((ast) => {
-            const tsq: TableStructQuery | null = getTableStructQueryObj(ast);
-            if (tsq) {
-                tmpTableStructsQueryList.push(tsq);
-            }
-        });
-        setTableStructs(tmpTableStructsQueryList);
-    }, [astList])
-    
+        const fetchData = async () => {
+            const queries = await Promise.all(astList.map(async (ast) => {
+                return await getTableStructQueryObj(ast);
+            }));
+            console.log("aaaaa");
+            console.log(queries);
+            setTableStructs(queries.filter(query => query !== null) as TableStruct[]);
+        };
+
+        fetchData();
+    }, [astList]);
 
     // astListのi番目の要素のサイズが変更された際のハンドラ
     function handleSetWidth(w: number, i: number) {
@@ -71,18 +71,19 @@ function LineageCanvas({ astList }: LineageCanvasProps) {
                     {tableStruts.map((ts: TableStruct, i: number) => {
                         if (ts instanceof TableStructQuery) {
                             return (
-                                <TableStructQueryBox
-                                    key={`TableStructQueryBox_${i}`}
-                                    tsq={ts as TableStructQuery}
-                                    x={AST_PADDING + astWidths.slice(0, i).reduce((acc, w) => acc + w + AST_PADDING, 0)}
-                                    y={AST_PADDING}
-                                    width={astWidths[i]}
-                                    height={astHeights[i]}
-                                    setWidth={(w: number)=>{handleSetWidth(w, i)}}
-                                    setHeight={(h: number)=>{handleSetHeight(h, i)}}
-                                />
+                                <g transform={`translate(${AST_PADDING + astWidths.slice(0, i).reduce((acc, w) => acc + w + AST_PADDING, 0)}, ${AST_PADDING})`}>
+                                    <TableStructQueryBox
+                                        key={`TableStructQueryBox_${i}`}
+                                        tsq={ts as TableStructQuery}
+                                        width={astWidths[i]}
+                                        height={astHeights[i]}
+                                        setWidth={(w: number)=>{handleSetWidth(w, i)}}
+                                        setHeight={(h: number)=>{handleSetHeight(h, i)}}
+                                    />
+                                </g>
                             );
                         }
+                        {/* TableStructTable の場合が入る予定 */}
                     })}
                     </svg>
                 </TransformComponent>

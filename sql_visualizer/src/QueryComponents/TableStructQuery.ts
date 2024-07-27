@@ -15,8 +15,11 @@ export abstract class TableStructQuery extends TableStruct {
     }
 }
 
-export function getTableStructQueryObj(ast: AST, name: string | undefined = undefined): TableStructQuery | null{
-    const { QuerySelect } = require('./QuerySelect');
+export async function getTableStructQueryObj(
+    ast: AST,
+    name: string | undefined = undefined
+): Promise<TableStructQuery | null> {
+    const { QuerySelect } = await import('./QuerySelect'); // 動的インポートに変更
     if (ast.type === 'select') {
         return new QuerySelect(ast as NspSelect, name);
     }

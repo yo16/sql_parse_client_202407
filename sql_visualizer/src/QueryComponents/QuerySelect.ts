@@ -11,6 +11,7 @@ import { ClauseFroms } from './ClauseFroms';
 import { ClauseWiths } from './ClauseWiths';
 
 
+// super(=TableStructQuery)._queryType === 'select'
 export class QuerySelect extends TableStructQuery {
     private _columns: ClauseColumns;
     private _fromsClause: ClauseFroms;
@@ -22,5 +23,17 @@ export class QuerySelect extends TableStructQuery {
         this._columns = new ClauseColumns(astSelect.columns);
         this._fromsClause = new ClauseFroms(astSelect.from);
         this._withsClause = new ClauseWiths(astSelect.with);
+    }
+
+    public get withs(): ClauseWiths {
+        return this._withsClause;
+    }
+
+    public get froms(): ClauseFroms {
+        return this._fromsClause;
+    }
+
+    public get columns(): ClauseColumns {
+        return this._columns;
     }
 }
