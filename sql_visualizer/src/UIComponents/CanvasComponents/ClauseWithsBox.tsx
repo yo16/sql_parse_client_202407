@@ -1,4 +1,5 @@
 import { ClauseWiths } from "@/QueryComponents/ClauseWiths";
+import { ClauseWithBox } from "./ClauseWithBox";
 
 interface ClauseWithsBoxProps {
     withs: ClauseWiths;
@@ -14,15 +15,24 @@ export function ClauseWithsBox({
     setWidth,
     setHeight,
 }: ClauseWithsBoxProps) {
+    function handleOnSetWidth(w: number, i: number) {
+        
+    }
+    function handleOnSetHeight(h: number, i: number) {
+        
+    }
+
     return (
         <>
-            <rect
-                x={0}
-                y={0}
-                width={width}
-                height={height}
-                fill={"#f00"}
-            />
+            {withs.withs.map((w, i) =>
+                <ClauseWithBox
+                    _with={w}
+                    width={100}
+                    height={50}
+                    setWidth={(w) => handleOnSetWidth(w, i)}
+                    setHeight={(h) => handleOnSetHeight(h, i)}
+                />
+            )}
         </>
     );
 }

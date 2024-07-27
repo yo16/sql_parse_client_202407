@@ -9,6 +9,13 @@ export class ClauseWiths {
     constructor(withs: NspWith[] | null) {
         this._withs = (withs? withs: []).map((w) => new ClauseWith(w));
     }
+
+    get withs() {
+        return this._withs;
+    }
+    get length() {
+        return this._withs.length;
+    }
 }
 
 
