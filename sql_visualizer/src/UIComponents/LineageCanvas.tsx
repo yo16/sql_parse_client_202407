@@ -3,14 +3,6 @@ import { AST } from "node-sql-parser";
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 
 
-interface LineageCanvasProps {
-    astList: AST[];
-}
-function LineageCanvas({  }: LineageCanvasProps) {
-    return (<></>);
-}
-
-/*
 import { TableStruct } from "@QueryComponents/TableStruct";
 import { TableStructQuery, getTableStructQueryObj } from "@QueryComponents/TableStructQuery";
 import { TableStructQueryBox } from "./CanvasComponents/TableStructQueryBox";
@@ -27,13 +19,13 @@ function LineageCanvas({ astList }: LineageCanvasProps) {
     const [svgHeight, setSvgHeight] = useState<number>(400);
     const [astWidths, setAstWidths] = useState<number[]>([]);
     const [astHeights, setAstHeights] = useState<number[]>([]);
-    const [tableStruts, setTableStructs] = useState<TableStruct[]>([]);
+    const [tableStruts, setTableStructs] = useState<TableStruct[]>([] as TableStruct[]);
 
     // デフォルトの幅は平等、高さは元の高さのまま
     useEffect(() => {
         // 幅は、左右とast同士の隙間を除いて、等分
-        setAstWidths(astList.map((a)=>(svgWidth - AST_PADDING*2 - AST_PADDING*(astList.length-1))/(astList.length)));
-        setAstHeights(astList.map((a)=>(svgHeight-AST_PADDING*2)));
+        setAstWidths(astList.map(()=>(svgWidth - AST_PADDING*2 - AST_PADDING*(astList.length-1))/(astList.length)));
+        setAstHeights(astList.map(()=>(svgHeight-AST_PADDING*2)));
     }, []);
 
     // ASTから、TableStructQueryへ変換
@@ -98,7 +90,6 @@ function LineageCanvas({ astList }: LineageCanvasProps) {
         </div>
     );
 }
-*/
                         /*
                         <SqlAst
                             key={`SqlAst_${i}`}

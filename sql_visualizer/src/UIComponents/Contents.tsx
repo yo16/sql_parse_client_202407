@@ -10,7 +10,7 @@ import { DisplayCtrlPanel } from "./DisplayCtrlPanel";
 import "./Contents.css";
 
 // パースサーバー
-const SERVER_URL = (process.env.NODE_ENV==="development") ?
+const SERVER_URL = (import.meta.env.MODE==="development") ?
     "http://localhost:3001/sql"
     : "https://express-sql-parser-202403.onrender.com/sql"
 ;
