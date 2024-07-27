@@ -67,7 +67,9 @@ function LineageCanvas({ astList }: LineageCanvasProps) {
                 minScale={0.1}
             >
                 <TransformComponent>
-                    <svg width={svgWidth} height={svgHeight} style={{backgroundColor: "#dde"}} >
+                    {/* <svg width={svgWidth} height={svgHeight} style={{backgroundColor: "#dde"}} > */}
+                    <svg width={550} height={400} style={{backgroundColor: "#dde"}} >
+                    {/* 固定か可変、どちらがいいかまだ検討不十分。たぶん固定 */}
                     {tableStruts.map((ts: TableStruct, i: number) => {
                         if (ts instanceof TableStructQuery) {
                             return (
