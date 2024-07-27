@@ -34,8 +34,6 @@ function LineageCanvas({ astList }: LineageCanvasProps) {
             const queries = await Promise.all(astList.map(async (ast) => {
                 return await getTableStructQueryObj(ast);
             }));
-            console.log("aaaaa");
-            console.log(queries);
             setTableStructs(queries.filter(query => query !== null) as TableStruct[]);
         };
 
