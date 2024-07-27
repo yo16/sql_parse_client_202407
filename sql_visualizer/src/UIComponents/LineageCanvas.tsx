@@ -71,9 +71,11 @@ function LineageCanvas({ astList }: LineageCanvasProps) {
                     {tableStruts.map((ts: TableStruct, i: number) => {
                         if (ts instanceof TableStructQuery) {
                             return (
-                                <g transform={`translate(${AST_PADDING + astWidths.slice(0, i).reduce((acc, w) => acc + w + AST_PADDING, 0)}, ${AST_PADDING})`}>
+                                <g
+                                    key={`G_TableStructQueryBox_${i}`}
+                                    transform={`translate(${AST_PADDING + astWidths.slice(0, i).reduce((acc, w) => acc + w + AST_PADDING, 0)}, ${AST_PADDING})`}
+                                >
                                     <TableStructQueryBox
-                                        key={`TableStructQueryBox_${i}`}
                                         tsq={ts as TableStructQuery}
                                         width={astWidths[i]}
                                         height={astHeights[i]}

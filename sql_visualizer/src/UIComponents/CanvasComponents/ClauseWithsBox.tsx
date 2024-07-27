@@ -19,19 +19,24 @@ export function ClauseWithsBox({
         
     }
     function handleOnSetHeight(h: number, i: number) {
-        
+
     }
 
     return (
         <>
             {withs.withs.map((w, i) =>
-                <ClauseWithBox
-                    _with={w}
-                    width={100}
-                    height={50}
-                    setWidth={(w) => handleOnSetWidth(w, i)}
-                    setHeight={(h) => handleOnSetHeight(h, i)}
-                />
+                <g
+                    key={`G_WithBox_${i}`}
+                    transform={`translate(${0}, ${0})`}
+                >
+                    <ClauseWithBox
+                        _with={w}
+                        width={100}
+                        height={50}
+                        setWidth={(w) => handleOnSetWidth(w, i)}
+                        setHeight={(h) => handleOnSetHeight(h, i)}
+                    />
+                </g>
             )}
         </>
     );

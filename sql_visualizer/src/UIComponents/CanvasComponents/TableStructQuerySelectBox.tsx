@@ -60,7 +60,9 @@ export function TableStructQuerySelectBox({
 
             {/* Withs */}
             {(select.withs.length > 0) &&
-                <g transform={`translate(${QUERY_ITEMS_PADDING}, ${QUERY_ITEMS_PADDING})`}>
+                <g
+                    transform={`translate(${QUERY_ITEMS_PADDING}, ${QUERY_ITEMS_PADDING})`}
+                >
                     <ClauseWithsBox
                         withs={select.withs}
                         width={withsWidth}
