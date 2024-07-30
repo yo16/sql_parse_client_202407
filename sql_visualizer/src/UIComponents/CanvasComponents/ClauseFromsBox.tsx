@@ -4,15 +4,13 @@ interface ClauseFromsBoxProps {
     froms: ClauseFroms;
     width: number;
     height: number;
-    setWidth: (w: number) => void;
-    setHeight: (h: number) => void;
+    onSetSize: (w: number, h: number) => void;
 }
 export function ClauseFromsBox({
     froms,
     width,
     height,
-    setWidth,
-    setHeight,
+    onSetSize,
 }: ClauseFromsBoxProps) {
     return (
         <>

@@ -10,15 +10,13 @@ interface TableStructQuerySelectBoxProps {
     select: QuerySelect;
     width: number;
     height: number;
-    setWidth: (w: number) => void;
-    setHeight: (h: number) => void;
+    onSetSize: (w: number, h: number) => void;
 }
 export function TableStructQuerySelectBox({
     select,
     width,
     height,
-    setWidth,
-    setHeight,
+    onSetSize,
 }: TableStructQuerySelectBoxProps) {
     const [withsWidth, setWithsWidth] = useState<number>(WITH_WIDTH);
     const [withsHeight, setWithsHeight] = useState<number>(INITIAL_HEIGHT);
@@ -27,22 +25,50 @@ export function TableStructQuerySelectBox({
     const [columnsWidth, setColumnsWidth] = useState<number>(COLUMN_WIDTH);
     const [columnsHeight, setColumnsHeight] = useState<number>(INITIAL_HEIGHT);
 
-    // with、from、columnの各々の幅から、全体の幅を計算してsetWidthを呼び出す
+    // with、from、columnの各々のサイズから、全体のサイズを計算してsetSizeを呼び出す
     useEffect(() => {
-        // with句だけの幅
-        const newWithsWidth: number = (select.withs.length > 0)? WITH_WIDTH: 0;
-        setWithsWidth(newWithsWidth);
+        // 幅：３つのアイテム＋アイテム間の隙間(2)＋左右の隙間(2)
+        // 高さ：最大の高さ＋上下の隙間(2)
+        onSetSize(
+            withsWidth + fromsWidth + columnsWidth + QUERY_ITEMS_PADDING*((select.withs.length > 0)? 4: 3),
+            Math.max(withsHeight, fromsHeight, columnsHeight) + QUERY_ITEMS_PADDING*2
+        );
+    }, [
+        select,
+        withsWidth, fromsWidth, columnsWidth,
+        withsHeight, fromsHeight, columnsHeight,
+    ]);
 
-        // ３つのアイテム＋アイテム間の隙間(2)＋左右の隙間(2)
-        setWidth(newWithsWidth + fromsWidth + columnsWidth + QUERY_ITEMS_PADDING*((select.withs.length > 0)? 4: 3));
-    }, [select, withsWidth, fromsWidth, columnsWidth]);
-
-    // with、from、columnの各々の高さから、全体の高さを計算してsetHeightを呼び出す
-    useEffect(() => {
-        // 最大の高さ＋上下の隙間(2)
-        setHeight(Math.max(withsHeight, fromsHeight, columnsHeight) + QUERY_ITEMS_PADDING*2);
-    }, [select, withsHeight, fromsHeight, columnsHeight]);
-
+    //function handleOnSetWithsWidth(w: number) {
+    //    setWithsWidth(w);
+    //}
+    //function handleOnSetWithsHeight(h: number) {
+    //    setWithsHeight(h);
+    //}
+    //function handleOnSetFromsWidth(w: number) {
+    //    setFromsWidth(w);
+    //}
+    //function handleOnSetFromsHeight(h: number) {
+    //    setFromsHeight(h);
+    //}
+    //function handleOnSetColumnsWidth(w: number) {
+    //    setColumnsWidth(w);
+    //}
+    //function handleOnSetColumnsHeight(h: number) {
+    //    setColumnsHeight(h);
+    //}
+    function handleOnSetWithsSize(w: number, h: number) {
+        setWithsWidth(w);
+        setWithsHeight(h);
+    }
+    function handleOnSetFromsSize(w: number, h: number) {
+        setFromsWidth(w);
+        setFromsHeight(h);
+    }
+    function handleOnSetColumnsSize(w: number, h: number) {
+        setColumnsWidth(w);
+        setColumnsHeight(h);
+    }
 
     return (
         <>
@@ -68,8 +94,7 @@ export function TableStructQuerySelectBox({
                         clauseWiths={select.withs}
                         width={withsWidth}
                         height={withsHeight}
-                        setWidth={setWithsWidth}
-                        setHeight={setWithsHeight}
+                        onSetSize={handleOnSetWithsSize}
                     />
                 </g>
             }
@@ -80,8 +105,7 @@ export function TableStructQuerySelectBox({
                     froms={select.froms}
                     width={fromsWidth}
                     height={fromsHeight}
-                    setWidth={setFromsWidth}
-                    setHeight={setFromsHeight}
+                    onSetSize={handleOnSetFromsSize}
                 />
             </g>
 
@@ -91,8 +115,7 @@ export function TableStructQuerySelectBox({
                     columns={select.columns}
                     width={columnsWidth}
                     height={columnsHeight}
-                    setWidth={setColumnsWidth}
-                    setHeight={setColumnsHeight}
+                    onSetSize={handleOnSetColumnsSize}
                 />
             </g>
         </>

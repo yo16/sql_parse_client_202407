@@ -8,16 +8,18 @@ interface TableStructQueryBoxProps {
     tsq: TableStructQuery;
     width: number;
     height: number;
-    setWidth: (w: number) => void;
-    setHeight: (h: number) => void;
+    onSetSize: (w: number, h: number) => void;
 }
 function TableStructQueryBox({
     tsq,
     width,
     height,
-    setWidth,
-    setHeight
+    onSetSize,
 }: TableStructQueryBoxProps) {
+    function handleOnSetSize(w: number, h: number) {
+        onSetSize(w, h);
+    }
+
     return (
         <>
             {/* インスタンスごとにBoxを選択 */}
@@ -26,8 +28,7 @@ function TableStructQueryBox({
                     select={tsq as QuerySelect}
                     width={width}
                     height={height}
-                    setWidth={(w) => setWidth(w)}
-                    setHeight={(h) => setHeight(h)}
+                    onSetSize={handleOnSetSize}
                 />
             }
         </>

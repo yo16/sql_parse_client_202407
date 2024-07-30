@@ -4,15 +4,13 @@ interface ClauseColumnsBoxProps {
     columns: ClauseColumns;
     width: number;
     height: number;
-    setWidth: (w: number) => void;
-    setHeight: (h: number) => void;
+    onSetSize: (w: number, h: number) => void;
 }
 export function ClauseColumnsBox({
     columns,
     width,
     height,
-    setWidth,
-    setHeight,
+    onSetSize,
 }: ClauseColumnsBoxProps) {
     return (
         <>

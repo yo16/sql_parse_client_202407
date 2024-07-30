@@ -41,16 +41,31 @@ function LineageCanvas({ astList }: LineageCanvasProps) {
     }, [astList]);
 
     // astListのi番目の要素のサイズが変更された際のハンドラ
-    function handleSetWidth(w: number, i: number) {
+    //function handleOnSetWidth(w: number, i: number) {
+    //    astWidths[i] = w;
+    //    console.log("astWidthは・・・");
+    //    console.log(w);
+    //    setAstWidths([...astWidths]);
+    //
+    //    // svgのwidthは、全部のwidthとその間のpadding、両サイドのpaddingを足した結果
+    //    setSvgWidth(AST_PADDING + astWidths.reduce((acc, w) => acc + w + AST_PADDING, 0));
+    //}
+    //function handleOnSetHeight(h: number, i: number) {
+    //    astHeights[i] = h;
+    //    setAstHeights([...astHeights]);
+    //
+    //    // svgのheightは、全部のheightの最大
+    //    const maxHeight: number = astHeights.reduce((acc, h) => (acc < h)? h: acc, svgHeight);
+    //    setSvgHeight(maxHeight);
+    //}
+    function handleOnSetSize(w: number, h: number, i: number) {
         astWidths[i] = w;
         setAstWidths([...astWidths]);
+        astHeights[i] = h;
+        setAstHeights([...astHeights]);
 
         // svgのwidthは、全部のwidthとその間のpadding、両サイドのpaddingを足した結果
         setSvgWidth(AST_PADDING + astWidths.reduce((acc, w) => acc + w + AST_PADDING, 0));
-    }
-    function handleSetHeight(h: number, i: number) {
-        astHeights[i] = h;
-        setAstHeights([...astHeights]);
 
         // svgのheightは、全部のheightの最大
         const maxHeight: number = astHeights.reduce((acc, h) => (acc < h)? h: acc, svgHeight);
@@ -66,9 +81,9 @@ function LineageCanvas({ astList }: LineageCanvasProps) {
                 minScale={0.1}
             >
                 <TransformComponent>
-                    {/* <svg width={svgWidth} height={svgHeight} style={{backgroundColor: "#dde"}} > */}
+                    <svg width={svgWidth} height={svgHeight} style={{backgroundColor: "#dde"}} >
                     {/* <svg width={550} height={400} style={{backgroundColor: "#dde"}} > */}
-                    <svg width={550} height={svgHeight} style={{backgroundColor: "#dde"}} >
+                    {/* <svg width={550} height={svgHeight} style={{backgroundColor: "#dde"}} > */}
                     {/* 固定か可変、どちらがいいかまだ検討不十分。たぶん固定 */}
                     {tableStruts.map((ts: TableStruct, i: number) => {
                         if (ts instanceof TableStructQuery) {
@@ -81,8 +96,7 @@ function LineageCanvas({ astList }: LineageCanvasProps) {
                                         tsq={ts as TableStructQuery}
                                         width={astWidths[i]}
                                         height={astHeights[i]}
-                                        setWidth={(w: number)=>{handleSetWidth(w, i)}}
-                                        setHeight={(h: number)=>{handleSetHeight(h, i)}}
+                                        onSetSize={(w: number, h: number) => {handleOnSetSize(w, h, i)}}
                                     />
                                 </g>
                             );

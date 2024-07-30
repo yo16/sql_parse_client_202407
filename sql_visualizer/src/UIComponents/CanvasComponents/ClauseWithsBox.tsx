@@ -21,15 +21,13 @@ interface ClauseWithsBoxProps {
     clauseWiths: ClauseWiths;
     width: number;
     height: number;
-    setWidth: (w: number) => void;
-    setHeight: (h: number) => void;
+    onSetSize: (w: number, h: number) => void;
 }
 export function ClauseWithsBox({
     clauseWiths,
     width,
     height,
-    setWidth,
-    setHeight,
+    onSetSize
 }: ClauseWithsBoxProps) {
     const [withWidths, setWithWidths] = useState<number[]>(clauseWiths.withs.map((_) => WITH_WIDTH));
     const [withHeights, setWithHeights] = useState<number[]>(clauseWiths.withs.map((_) => INITIAL_HEIGHT));
@@ -51,19 +49,25 @@ export function ClauseWithsBox({
     // with句が変わったときと、各々のwithの幅・高さが変わったとき、全体を再計算
     useEffect(() => {
         // 全体の幅と高さを計算
-        calcWholeWidth();
-        calcWholeHeight();
+        const wholeWidth: number = calcWholeWidth();
+        const wholeHeight: number = calcWholeHeight();
+
+        onSetSize(wholeWidth, wholeHeight);
     }, [clauseWiths, withWidths, withHeights])
 
-    // widthが変わったときのハンドラ
-    function handleOnSetWidth(w: number, i: number) {
+    // width, heightが変わったときのハンドラ
+    function handleOnSetSize(w: number, h: number, i: number) {
         // ローカルのuseState値を更新
+        console.log("widthが変わったよ WithsBox", w);
         withWidths[i] = w;
-        setWithWidths([...withWidths]);
+        
+        // ローカルのuseState値を更新
+        withHeights[i] = h;
+        setWithHeights([...withHeights]);
     }
 
     // 全体の幅を計算して通知
-    function calcWholeWidth() {
+    function calcWholeWidth(): number {
         // depthごとの最大幅から、全体の幅を計算
         const wholeWidth: number
             = Array
@@ -91,20 +95,11 @@ export function ClauseWithsBox({
                     0
                 )
             ;
-
-        // 親へ通知
-        setWidth(wholeWidth);
-    }
-
-    // heightが変わったときのハンドラ
-    function handleOnSetHeight(h: number, i: number) {
-        // ローカルのuseState値を更新
-        withHeights[i] = h;
-        setWithHeights([...withHeights]);
+        return wholeWidth;
     }
 
     // 全体の高さを計算して通知
-    function calcWholeHeight() {
+    function calcWholeHeight(): number {
         // depthごとの最大値を使用
         const wholeHeight: number
             = Array
@@ -134,9 +129,7 @@ export function ClauseWithsBox({
                     0
                 )
             ;
-        
-        // 親へ通知
-        setHeight(wholeHeight);
+        return wholeHeight;
     }
 
     let xPos: number = 0;
@@ -197,8 +190,7 @@ export function ClauseWithsBox({
                                         clauseWith={clauseWiths.withs[withIndex]}
                                         width={withWidths[withIndex]}
                                         height={withHeights[withIndex]}
-                                        setWidth={(w) => handleOnSetWidth(w, withIndex)}
-                                        setHeight={(h) => handleOnSetHeight(h, withIndex)}
+                                        onSetSize={(w, h) => handleOnSetSize(w, h, withIndex)}
                                     />
                                 </g>
                             );
