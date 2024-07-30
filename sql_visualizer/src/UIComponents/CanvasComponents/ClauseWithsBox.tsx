@@ -194,7 +194,7 @@ export function ClauseWithsBox({
                                     transform={`translate(${0}, ${yPos})`}
                                 >
                                     <ClauseWithBox
-                                        _with={clauseWiths.withs[withIndex]}
+                                        clauseWith={clauseWiths.withs[withIndex]}
                                         width={withWidths[withIndex]}
                                         height={withHeights[withIndex]}
                                         setWidth={(w) => handleOnSetWidth(w, withIndex)}
