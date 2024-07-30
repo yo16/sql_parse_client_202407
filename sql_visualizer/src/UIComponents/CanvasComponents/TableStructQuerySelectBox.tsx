@@ -27,20 +27,21 @@ export function TableStructQuerySelectBox({
     const [columnsWidth, setColumnsWidth] = useState<number>(COLUMN_WIDTH);
     const [columnsHeight, setColumnsHeight] = useState<number>(INITIAL_HEIGHT);
 
-    useEffect(() => {
-        setWithsWidth((select.withs.length > 0)? WITH_WIDTH: 0);
-    }, [select]);
-
     // with、from、columnの各々の幅から、全体の幅を計算してsetWidthを呼び出す
     useEffect(() => {
+        // with句だけの幅
+        const newWithsWidth: number = (select.withs.length > 0)? WITH_WIDTH: 0;
+        setWithsWidth(newWithsWidth);
+
         // ３つのアイテム＋アイテム間の隙間(2)＋左右の隙間(2)
-        setWidth(withsWidth + fromsWidth + columnsWidth + QUERY_ITEMS_PADDING*((select.withs.length === 0)? 3: 4));
-    }, [withsWidth, fromsWidth, columnsWidth]);
+        setWidth(newWithsWidth + fromsWidth + columnsWidth + QUERY_ITEMS_PADDING*((select.withs.length > 0)? 4: 3));
+    }, [select, withsWidth, fromsWidth, columnsWidth]);
+
     // with、from、columnの各々の高さから、全体の高さを計算してsetHeightを呼び出す
     useEffect(() => {
         // 最大の高さ＋上下の隙間(2)
         setHeight(Math.max(withsHeight, fromsHeight, columnsHeight) + QUERY_ITEMS_PADDING*2);
-    }, [withsHeight, fromsHeight, columnsHeight]);
+    }, [select, withsHeight, fromsHeight, columnsHeight]);
 
 
     return (
@@ -64,7 +65,7 @@ export function TableStructQuerySelectBox({
                     transform={`translate(${QUERY_ITEMS_PADDING}, ${QUERY_ITEMS_PADDING})`}
                 >
                     <ClauseWithsBox
-                        withs={select.withs}
+                        clauseWiths={select.withs}
                         width={withsWidth}
                         height={withsHeight}
                         setWidth={setWithsWidth}

@@ -1,4 +1,5 @@
 import { ClauseWith } from "@/QueryComponents/ClauseWiths";
+import { TableStructQuerySelectBox } from "./TableStructQuerySelectBox";
 
 interface ClauseWithBoxProps {
     _with: ClauseWith;      // withは予約語

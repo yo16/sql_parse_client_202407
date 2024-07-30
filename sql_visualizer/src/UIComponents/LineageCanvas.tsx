@@ -43,17 +43,18 @@ function LineageCanvas({ astList }: LineageCanvasProps) {
     // astListのi番目の要素のサイズが変更された際のハンドラ
     function handleSetWidth(w: number, i: number) {
         astWidths[i] = w;
-        setAstWidths(astWidths);
+        setAstWidths([...astWidths]);
 
         // svgのwidthは、全部のwidthとその間のpadding、両サイドのpaddingを足した結果
         setSvgWidth(AST_PADDING + astWidths.reduce((acc, w) => acc + w + AST_PADDING, 0));
     }
     function handleSetHeight(h: number, i: number) {
         astHeights[i] = h;
-        setAstHeights(astHeights);
+        setAstHeights([...astHeights]);
 
         // svgのheightは、全部のheightの最大
-        setSvgHeight(astHeights.reduce((acc, h) => (acc < h)? h: acc, svgHeight));
+        const maxHeight: number = astHeights.reduce((acc, h) => (acc < h)? h: acc, svgHeight);
+        setSvgHeight(maxHeight);
     }
 
     
@@ -66,7 +67,8 @@ function LineageCanvas({ astList }: LineageCanvasProps) {
             >
                 <TransformComponent>
                     {/* <svg width={svgWidth} height={svgHeight} style={{backgroundColor: "#dde"}} > */}
-                    <svg width={550} height={400} style={{backgroundColor: "#dde"}} >
+                    {/* <svg width={550} height={400} style={{backgroundColor: "#dde"}} > */}
+                    <svg width={550} height={svgHeight} style={{backgroundColor: "#dde"}} >
                     {/* 固定か可変、どちらがいいかまだ検討不十分。たぶん固定 */}
                     {tableStruts.map((ts: TableStruct, i: number) => {
                         if (ts instanceof TableStructQuery) {

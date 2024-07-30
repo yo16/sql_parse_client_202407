@@ -10,7 +10,7 @@ export class ClauseWiths {
         this._withs = (withs? withs: []).map((w) => new ClauseWith(w));
     }
 
-    get withs() {
+    get withs(): ClauseWith[] {
         return this._withs;
     }
     get length() {
@@ -30,5 +30,9 @@ export class ClauseWith {
             paramWith.stmt.ast,
             paramWith.name.value
         );
+    }
+    
+    get select() {
+        return this._select;
     }
 }

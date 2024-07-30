@@ -8,6 +8,9 @@ export const AST_PADDING = 10;
 // Query要素の隙間
 export const QUERY_ITEMS_PADDING = 30;
 
+// with、from要素内の隙間
+export const INCLAUSE_ITEMS_PADDING = 15;
+
 // with句１つの幅
 export const WITH_WIDTH = 100;
 
