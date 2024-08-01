@@ -2,7 +2,8 @@ import { From as NspFrom, BaseFrom, Join as JoinFrom, TableExpr as NspTableExprF
 
 import { TableStruct } from './TableStruct';
 import { TableStructTable } from './TableStructTable';
-import { getTableStructQueryObj, TableStructQuery } from './TableStructQuery';
+import { TableStructQuery } from './TableStructQuery';
+import { getTableStructQueryObj } from './getTableStructQueryObj';
 import { TableColumns } from './TableColumns';
 import { ParseExpr } from './ParseExpr';
 

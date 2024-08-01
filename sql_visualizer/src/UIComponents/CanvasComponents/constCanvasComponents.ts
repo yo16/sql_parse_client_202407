@@ -5,11 +5,14 @@ export const INITIAL_HEIGHT = 20;
 // AST間の隙間
 export const AST_PADDING = 10;
 
+// with、from、columnのヘッダー高さ
+export const CLAUSE_HEADER_HEIGHT = 20;
+
 // Query要素の隙間
 export const QUERY_ITEMS_PADDING = 30;
 
 // with、from要素内の隙間
-export const INCLAUSE_ITEMS_PADDING = 15;
+export const INCLAUSE_ITEMS_PADDING = 10;
 
 // with句１つの幅
 export const WITH_WIDTH = 100;

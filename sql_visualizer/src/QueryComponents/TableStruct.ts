@@ -11,4 +11,7 @@ export abstract class TableStruct {
         this._db = db;
         this._tableName = tableName;
     }
+    tmpSetName(nm: string) {
+        this._tableName += nm;
+    }
 }

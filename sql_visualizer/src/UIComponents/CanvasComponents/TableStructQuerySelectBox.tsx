@@ -18,8 +18,8 @@ export function TableStructQuerySelectBox({
     height,
     onSetSize,
 }: TableStructQuerySelectBoxProps) {
-    const [withsWidth, setWithsWidth] = useState<number>(WITH_WIDTH);
-    const [withsHeight, setWithsHeight] = useState<number>(INITIAL_HEIGHT);
+    const [withsWidth, setWithsWidth] = useState<number>(0);
+    const [withsHeight, setWithsHeight] = useState<number>(0);
     const [fromsWidth, setFromsWidth] = useState<number>(FROM_WIDTH);
     const [fromsHeight, setFromsHeight] = useState<number>(INITIAL_HEIGHT);
     const [columnsWidth, setColumnsWidth] = useState<number>(COLUMN_WIDTH);
@@ -39,24 +39,7 @@ export function TableStructQuerySelectBox({
         withsHeight, fromsHeight, columnsHeight,
     ]);
 
-    //function handleOnSetWithsWidth(w: number) {
-    //    setWithsWidth(w);
-    //}
-    //function handleOnSetWithsHeight(h: number) {
-    //    setWithsHeight(h);
-    //}
-    //function handleOnSetFromsWidth(w: number) {
-    //    setFromsWidth(w);
-    //}
-    //function handleOnSetFromsHeight(h: number) {
-    //    setFromsHeight(h);
-    //}
-    //function handleOnSetColumnsWidth(w: number) {
-    //    setColumnsWidth(w);
-    //}
-    //function handleOnSetColumnsHeight(h: number) {
-    //    setColumnsHeight(h);
-    //}
+
     function handleOnSetWithsSize(w: number, h: number) {
         setWithsWidth(w);
         setWithsHeight(h);
@@ -89,6 +72,7 @@ export function TableStructQuerySelectBox({
             {(select.withs.length > 0) &&
                 <g
                     transform={`translate(${QUERY_ITEMS_PADDING}, ${QUERY_ITEMS_PADDING})`}
+                    name="WithsBoxGroup"
                 >
                     <ClauseWithsBox
                         clauseWiths={select.withs}

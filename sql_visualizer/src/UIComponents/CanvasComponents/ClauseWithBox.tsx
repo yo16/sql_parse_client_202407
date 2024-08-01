@@ -1,8 +1,10 @@
+import { useEffect } from "react";
+
 import { ClauseWith } from "@/QueryComponents/ClauseWiths";
 import { TableStructQuerySelectBox } from "./TableStructQuerySelectBox";
 
 interface ClauseWithBoxProps {
-    clauseWith: ClauseWith;      // withは予約語
+    clauseWith: ClauseWith;
     width: number;
     height: number;
     onSetSize: (w: number, h: number) => void;
@@ -14,7 +16,6 @@ export function ClauseWithBox({
     onSetSize,
 }: ClauseWithBoxProps) {
     function handleOnSetSize(w: number, h: number) {
-        console.log("widthが変わったよ withBox", w);
         onSetSize(w, h);
     }
 
@@ -29,12 +30,3 @@ export function ClauseWithBox({
         </>
     );
 }
-/*
-<rect
-x={0}
-y={0}
-width={width}
-height={height}
-fill={"#f00"}
-/>
-*/

@@ -11,11 +11,10 @@ ClauseWithsBox
 
 import { useState, useEffect, useRef } from "react";
 
-import { ClauseWiths, ClauseWith } from "@/QueryComponents/ClauseWiths";
+import { ClauseWiths } from "@/QueryComponents/ClauseWiths";
 import { ClauseWithBox } from "./ClauseWithBox";
 
-import { WITH_WIDTH, INITIAL_HEIGHT, INCLAUSE_ITEMS_PADDING } from "./constCanvasComponents";
-
+import { WITH_WIDTH, INITIAL_HEIGHT, INCLAUSE_ITEMS_PADDING, CLAUSE_HEADER_HEIGHT } from "./constCanvasComponents";
 
 interface ClauseWithsBoxProps {
     clauseWiths: ClauseWiths;
@@ -29,22 +28,10 @@ export function ClauseWithsBox({
     height,
     onSetSize
 }: ClauseWithsBoxProps) {
-    const [withWidths, setWithWidths] = useState<number[]>(clauseWiths.withs.map((_) => WITH_WIDTH));
-    const [withHeights, setWithHeights] = useState<number[]>(clauseWiths.withs.map((_) => INITIAL_HEIGHT));
+    const [withWidths, setWithWidths] = useState<number[]>([]);
+    const [withHeights, setWithHeights] = useState<number[]>([]);
     const posManager = useRef<WithPositionManager | null>(null);
-
-    useEffect(() => {
-        // WithPositionManagerを初期化
-        posManager.current = new WithPositionManager();
-        clauseWiths.withs.forEach((w) => {
-            // clauseWithsのindexのまま登録
-            posManager.current?.addWithClause();
-        });
-
-        // width、heightを初期化
-        setWithWidths(clauseWiths.withs.map((_) => WITH_WIDTH));
-        setWithHeights(clauseWiths.withs.map((_) => INITIAL_HEIGHT));
-    }, [clauseWiths]);
+    const curClauseWiths = useRef<ClauseWiths | null>(null);
 
     // with句が変わったときと、各々のwithの幅・高さが変わったとき、全体を再計算
     useEffect(() => {
@@ -53,20 +40,29 @@ export function ClauseWithsBox({
         const wholeHeight: number = calcWholeHeight();
 
         onSetSize(wholeWidth, wholeHeight);
-    }, [clauseWiths, withWidths, withHeights])
+    }, [withWidths, withHeights])
 
-    // width, heightが変わったときのハンドラ
-    function handleOnSetSize(w: number, h: number, i: number) {
-        // ローカルのuseState値を更新
-        console.log("widthが変わったよ WithsBox", w);
-        withWidths[i] = w;
-        
-        // ローカルのuseState値を更新
-        withHeights[i] = h;
-        setWithHeights([...withHeights]);
+    // WithPositionManagerを作り直す（with句が変わったタイミングでのみ呼び出される想定）
+    function setWithPositionManager() {
+        // WithPositionManagerを初期化
+        posManager.current = new WithPositionManager();
+        clauseWiths.withs.forEach((_) => {
+            // clauseWithsのindexのまま登録
+            posManager.current?.addWithClause();
+        });
+
+        // withWidths、withHeightsを初期化
+        const initialWithWidth: number[] = clauseWiths.withs.map((_) => WITH_WIDTH);
+        if (!arraysEqual(withWidths, initialWithWidth)) {
+            setWithWidths(initialWithWidth);
+        }
+        const initialWithHeight: number[] = clauseWiths.withs.map((_) => INITIAL_HEIGHT);
+        if (!arraysEqual(withHeights, initialWithHeight)) {
+            setWithHeights(initialWithHeight);
+        }
     }
 
-    // 全体の幅を計算して通知
+    // 全体の幅を計算（純粋な関数で、変数などは変更しない）
     function calcWholeWidth(): number {
         // depthごとの最大幅から、全体の幅を計算
         const wholeWidth: number
@@ -92,13 +88,13 @@ export function ClauseWithsBox({
 
                         return accumWidth + ((curDepthIndex>0)? INCLAUSE_ITEMS_PADDING: 0) + maxWidthInCurDepth;
                     },
-                    0
+                    INCLAUSE_ITEMS_PADDING*2    // 左右
                 )
             ;
         return wholeWidth;
     }
 
-    // 全体の高さを計算して通知
+    // 全体の高さを計算（純粋な関数で、変数などは変更しない）
     function calcWholeHeight(): number {
         // depthごとの最大値を使用
         const wholeHeight: number
@@ -128,9 +124,29 @@ export function ClauseWithsBox({
                     },
                     0
                 )
+            + INCLAUSE_ITEMS_PADDING*2 + CLAUSE_HEADER_HEIGHT    // 上下 + ヘッダー
             ;
         return wholeHeight;
     }
+
+    // width, heightが変わったときのハンドラ
+    function handleOnSetSize(w: number, h: number, i: number) {
+        // ローカルのuseState値を更新
+        withWidths[i] = w;
+        setWithWidths([...withWidths]);
+
+        // ローカルのuseState値を更新
+        withHeights[i] = h;
+        setWithHeights([...withHeights]);
+    }
+
+    // with句が変わった場合のみ、withPositionManagerを更新する
+    // ただし描画の前で実行する必要があるため、タイミングの遅いフックは使えない
+    if (curClauseWiths.current !== clauseWiths) {   // インスタンスの比較
+        setWithPositionManager();
+        curClauseWiths.current = clauseWiths;
+    }
+
 
     let xPos: number = 0;
     let nextXPos: number = 0;
@@ -172,7 +188,31 @@ export function ClauseWithsBox({
                     <g
                         key={`G_WithDepth_${curDepthIndex}`}
                         transform={`translate(${xPos}, ${0})`}
+                        name={`GroupDepth-${curDepthIndex}`}
                     >
+                        <rect
+                            x={0}
+                            y={0}
+                            width={width}
+                            height={height}
+                            fill={"#f00"}
+                        />
+                        <rect
+                            x={0}
+                            y={0}
+                            width={width}
+                            height={CLAUSE_HEADER_HEIGHT}
+                            fill={"#fff"}
+                        />
+                        <text
+                            x={CLAUSE_HEADER_HEIGHT/4}
+                            y={CLAUSE_HEADER_HEIGHT-CLAUSE_HEADER_HEIGHT/4}
+                            fontStyle={"italic"}
+                            fontSize={CLAUSE_HEADER_HEIGHT/1.5}
+                            fill={"#f00"}
+                        >
+                            with
+                        </text>
                         {withIndexesInCurDepth.map((withIndex: number) => {     // depth内のwithごとのループ
                             // 前のループで計算したnextYPosを設定
                             yPos = nextYPos;
@@ -184,7 +224,8 @@ export function ClauseWithsBox({
                             return (
                                 <g
                                     key={`G_WithBox_${withIndex}`}
-                                    transform={`translate(${0}, ${yPos})`}
+                                    transform={`translate(${INCLAUSE_ITEMS_PADDING}, ${INCLAUSE_ITEMS_PADDING+CLAUSE_HEADER_HEIGHT+yPos})`}
+                                    name={`WithBox-${withIndex}`}
                                 >
                                     <ClauseWithBox
                                         clauseWith={clauseWiths.withs[withIndex]}
@@ -327,3 +368,14 @@ class WithPositionManager {
         });
     }
 }
+
+
+// number配列の比較
+function arraysEqual(arr1: number[], arr2: number[]): boolean {
+    if (arr1.length !== arr2.length) return false;
+    for (let i = 0; i < arr1.length; i++) {
+        if (arr1[i] !== arr2[i]) return false;
+    }
+    return true;
+}
+
