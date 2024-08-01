@@ -39,6 +39,7 @@ export function TableStructQuerySelectBox({
             Math.max(withsHeightLocal, fromsHeight, columnsHeight) + QUERY_ITEMS_PADDING*2
         );
     }, [
+        select,
         withsWidth, fromsWidth, columnsWidth,
         withsHeight, fromsHeight, columnsHeight,
     ]);
