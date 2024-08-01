@@ -27,16 +27,11 @@ export function TableStructQuerySelectBox({
 
     // with、from、columnの各々のサイズから、全体のサイズを計算してsetSizeを呼び出す
     useEffect(() => {
-        // with句がないときは、withsWidth, withsHeightが前回の値(前回with句があったselectのwidth,height)から更新されないが
-        // それらを更新すると、ループしてしまうので、値は無視しゼロを使う
-        const withsWidthLocal: number = (select.withs.length === 0)? 0: withsWidth;
-        const withsHeightLocal: number = (select.withs.length === 0)? 0: withsHeight;
-
         // 幅：３つのアイテム＋アイテム間の隙間(2)＋左右の隙間(2)
         // 高さ：最大の高さ＋上下の隙間(2)
         onSetSize(
-            withsWidthLocal + fromsWidth + columnsWidth + QUERY_ITEMS_PADDING*((select.withs.length > 0)? 4: 3),
-            Math.max(withsHeightLocal, fromsHeight, columnsHeight) + QUERY_ITEMS_PADDING*2
+            withsWidth + fromsWidth + columnsWidth + QUERY_ITEMS_PADDING*((select.withs.length > 0)? 4: 3),
+            Math.max(withsHeight, fromsHeight, columnsHeight) + QUERY_ITEMS_PADDING*2
         );
     }, [
         select,
@@ -83,19 +78,17 @@ export function TableStructQuerySelectBox({
             />
 
             {/* Withs */}
-            {(select.withs.length > 0) &&
-                <g
-                    transform={`translate(${QUERY_ITEMS_PADDING}, ${QUERY_ITEMS_PADDING})`}
-                    name="WithsBoxGroup"
-                >
-                    <ClauseWithsBox
-                        clauseWiths={select.withs}
-                        width={withsWidth}
-                        height={withsHeight}
-                        onSetSize={handleOnSetWithsSize}
-                    />
-                </g>
-            }
+            <g
+                transform={`translate(${QUERY_ITEMS_PADDING}, ${QUERY_ITEMS_PADDING})`}
+                name="WithsBoxGroup"
+            >
+                <ClauseWithsBox
+                    clauseWiths={select.withs}
+                    width={withsWidth}
+                    height={withsHeight}
+                    onSetSize={handleOnSetWithsSize}
+                />
+            </g>
             
             {/* Froms */}
             <g transform={`translate(${fromsStartX}, ${QUERY_ITEMS_PADDING})`}>
