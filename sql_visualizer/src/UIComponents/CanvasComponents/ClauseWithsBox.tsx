@@ -124,7 +124,7 @@ export function ClauseWithsBox({
                     },
                     0
                 )
-            + INCLAUSE_ITEMS_PADDING*2 + CLAUSE_HEADER_HEIGHT    // 上下 + ヘッダー
+            + INCLAUSE_ITEMS_PADDING*2 + ((clauseWiths.withs.length > 0)? CLAUSE_HEADER_HEIGHT: 0)    // 上下 + ヘッダー
             ;
         return wholeHeight;
     }
