@@ -40,7 +40,7 @@ export function ClauseWithsBox({
         const wholeHeight: number = calcWholeHeight();
 
         onSetSize(wholeWidth, wholeHeight);
-    }, [withWidths, withHeights])
+    }, [clauseWiths, withWidths, withHeights])
 
     // WithPositionManagerを作り直す（with句が変わったタイミングでのみ呼び出される想定）
     function setWithPositionManager() {

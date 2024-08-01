@@ -27,18 +27,21 @@ export function TableStructQuerySelectBox({
 
     // with、from、columnの各々のサイズから、全体のサイズを計算してsetSizeを呼び出す
     useEffect(() => {
+        // with句がないときは、withsWidth, withsHeightが前回の値(前回with句があったselectのwidth,height)から更新されないが
+        // それらを更新すると、ループしてしまうので、値は無視しゼロを使う
+        const withsWidthLocal: number = (select.withs.length === 0)? 0: withsWidth;
+        const withsHeightLocal: number = (select.withs.length === 0)? 0: withsHeight;
+
         // 幅：３つのアイテム＋アイテム間の隙間(2)＋左右の隙間(2)
         // 高さ：最大の高さ＋上下の隙間(2)
         onSetSize(
-            withsWidth + fromsWidth + columnsWidth + QUERY_ITEMS_PADDING*((select.withs.length > 0)? 4: 3),
-            Math.max(withsHeight, fromsHeight, columnsHeight) + QUERY_ITEMS_PADDING*2
+            withsWidthLocal + fromsWidth + columnsWidth + QUERY_ITEMS_PADDING*((select.withs.length > 0)? 4: 3),
+            Math.max(withsHeightLocal, fromsHeight, columnsHeight) + QUERY_ITEMS_PADDING*2
         );
     }, [
-        select,
         withsWidth, fromsWidth, columnsWidth,
         withsHeight, fromsHeight, columnsHeight,
     ]);
-
 
     function handleOnSetWithsSize(w: number, h: number) {
         setWithsWidth(w);
@@ -53,6 +56,16 @@ export function TableStructQuerySelectBox({
         setColumnsHeight(h);
     }
 
+
+    const fromsStartX: number =
+        ((select.withs.length === 0)? 0: withsWidth) +
+        QUERY_ITEMS_PADDING*((select.withs.length === 0)? 1: 2)
+    ;
+    const columnsStartX: number =
+        ((select.withs.length === 0)? 0: withsWidth) +
+        fromsWidth +
+        QUERY_ITEMS_PADDING*((select.withs.length === 0)? 2: 3)
+    ;
     return (
         <>
             {/* Query全体の枠 */}
@@ -84,7 +97,7 @@ export function TableStructQuerySelectBox({
             }
             
             {/* Froms */}
-            <g transform={`translate(${withsWidth + QUERY_ITEMS_PADDING*((select.withs.length === 0)? 1: 2)}, ${QUERY_ITEMS_PADDING})`}>
+            <g transform={`translate(${fromsStartX}, ${QUERY_ITEMS_PADDING})`}>
                 <ClauseFromsBox
                     froms={select.froms}
                     width={fromsWidth}
@@ -94,7 +107,7 @@ export function TableStructQuerySelectBox({
             </g>
 
             {/* Columns */}
-            <g transform={`translate(${withsWidth + fromsWidth + QUERY_ITEMS_PADDING*((select.withs.length === 0)? 2: 3)}, ${QUERY_ITEMS_PADDING})`}>
+            <g transform={`translate(${columnsStartX}, ${QUERY_ITEMS_PADDING})`}>
                 <ClauseColumnsBox
                     columns={select.columns}
                     width={columnsWidth}
