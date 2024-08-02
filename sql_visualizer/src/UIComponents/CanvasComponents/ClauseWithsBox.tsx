@@ -16,6 +16,8 @@ import { ClauseWithBox } from "./ClauseWithBox";
 
 import { WITH_WIDTH, INITIAL_HEIGHT, INCLAUSE_ITEMS_PADDING, CLAUSE_HEADER_HEIGHT } from "./constCanvasComponents";
 
+import { arraysEqual, getTextPosByHeight } from "./commonFunctions";
+
 interface ClauseWithsBoxProps {
     clauseWiths: ClauseWiths;
     width: number;
@@ -65,9 +67,11 @@ export function ClauseWithsBox({
     // 全体の幅を計算（純粋な関数で、変数などは変更しない）
     function calcWholeWidth(): number {
         // depthごとの最大幅から、全体の幅を計算
+        const widthDeptLen: number = posManager.current? posManager.current.maxDepth+1: 0;
+
         const wholeWidth: number
             = Array
-                .from({ length: posManager.current? posManager.current.maxDepth+1: 0 }, (_,i)=>i)
+                .from({ length: widthDeptLen }, (_,i)=>i)
                 .reduce((accumWidth: number, curDepthIndex: number) =>
                     {
                         if (!posManager.current) return accumWidth;
@@ -88,8 +92,9 @@ export function ClauseWithsBox({
 
                         return accumWidth + ((curDepthIndex>0)? INCLAUSE_ITEMS_PADDING: 0) + maxWidthInCurDepth;
                     },
-                    INCLAUSE_ITEMS_PADDING*2    // 左右
+                    0
                 )
+            + ((widthDeptLen>0)? INCLAUSE_ITEMS_PADDING*2: 0)    // 左右
             ;
         return wholeWidth;
     }
@@ -205,10 +210,8 @@ export function ClauseWithsBox({
                             fill={"#fff"}
                         />
                         <text
-                            x={CLAUSE_HEADER_HEIGHT/4}
-                            y={CLAUSE_HEADER_HEIGHT-CLAUSE_HEADER_HEIGHT/4}
+                            {...(getTextPosByHeight(CLAUSE_HEADER_HEIGHT))}
                             fontStyle={"italic"}
-                            fontSize={CLAUSE_HEADER_HEIGHT/1.5}
                             fill={"#f00"}
                         >
                             with
@@ -368,14 +371,3 @@ class WithPositionManager {
         });
     }
 }
-
-
-// number配列の比較
-function arraysEqual(arr1: number[], arr2: number[]): boolean {
-    if (arr1.length !== arr2.length) return false;
-    for (let i = 0; i < arr1.length; i++) {
-        if (arr1[i] !== arr2[i]) return false;
-    }
-    return true;
-}
-

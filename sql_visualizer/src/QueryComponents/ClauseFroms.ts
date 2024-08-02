@@ -13,6 +13,13 @@ export class ClauseFroms {
     constructor(froms: NspFrom[] | null) {
         this._froms = (froms? froms: []).map((f) => new ClauseFrom(f));
     }
+
+    get froms(): ClauseFrom[] {
+        return this._froms;
+    }
+    get length() {
+        return this._froms.length;
+    }
 }
 
 
@@ -43,7 +50,6 @@ export class ClauseFrom {
                 baseFrom.db,
                 baseFrom.table
             );
-            
         }
         
         // -- Join
@@ -91,5 +97,29 @@ export class ClauseFrom {
 
         // -- Dual
         //// なし
+    }
+
+    get fromType() {
+        // 'BaseFrom' | 'Join' | 'TableExpr' | 'Dual'
+        return this._fromType;
+    }
+    get db() {
+        return this._tableStruct?.db;
+    }
+    get tableName() {
+        return this._tableStruct?.tableName;
+    }
+    get columns() {
+        if (this._fromType === 'TableExpr') {
+            console.error("未実装");
+        } else if (this._fromType === 'Join') {
+            return (this._tableStruct as TableStructTable).columns;
+        }
+
+        // それ以外の場合は空の配列を返す
+        return [];
+    }
+    get tableStruct() {
+        return this._tableStruct;
     }
 }

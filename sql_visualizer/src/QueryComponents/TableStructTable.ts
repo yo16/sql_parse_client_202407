@@ -16,4 +16,8 @@ export class TableStructTable extends TableStruct {
     public addColumn(columnName: string): void {
         this._columns.push(columnName);
     }
+
+    get columns() {
+        return [...this._columns];
+    }
 }

@@ -93,7 +93,7 @@ export function TableStructQuerySelectBox({
             {/* Froms */}
             <g transform={`translate(${fromsStartX}, ${QUERY_ITEMS_PADDING})`}>
                 <ClauseFromsBox
-                    froms={select.froms}
+                    clauseFroms={select.froms}
                     width={fromsWidth}
                     height={fromsHeight}
                     onSetSize={handleOnSetFromsSize}
