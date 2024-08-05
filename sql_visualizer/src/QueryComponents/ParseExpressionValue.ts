@@ -112,7 +112,6 @@ export class ParseExpressionValue {
     }
 
     public getTableColumns(): TableColumns {
-        // t.b.d.
-        return new TableColumns();
+        return this._tcs;
     }
 }

@@ -48,4 +48,27 @@ export class ClauseColumn {
             this._tableColumns = new TableColumns();
         }
     }
+
+    get columnName(): string {
+        if (this._as) { return this._as}
+        
+        if (this._tableColumns.columnCount === 1) {
+            const tables = this._tableColumns.getTables();
+            return this._tableColumns.getColumnsByTable(tables[0])[0];
+        }
+
+        return "(composite column)";
+    }
+
+    get tableCols(): TableColumns {
+        return this._tableColumns;
+    }
+
+    get tables(): string[] {
+        return this._tableColumns.getTables();
+    }
+
+    columnsByTable(tableName: string): string[] {
+        return this._tableColumns.getColumnsByTable(tableName);
+    }
 }

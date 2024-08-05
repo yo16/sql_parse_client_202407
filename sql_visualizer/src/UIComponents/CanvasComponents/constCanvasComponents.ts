@@ -26,4 +26,6 @@ export const FORM_NAME_HEIGHT = 30;
 export const COLUMN_WIDTH = 100;
 // columnの高さ
 export const COLUMN_NAME_HEIGHT = 30;
+// column要素内の隙間
+export const INCOLUMN_ITEMS_PADDING = 2;
 

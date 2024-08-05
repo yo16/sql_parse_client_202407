@@ -4,9 +4,10 @@ import { ClauseColumns } from "@/QueryComponents/ClauseColumns";
 import { ClauseColumnBox } from "./ClauseColumnBox";
 
 import {
-    COLUMN_WIDTH, INCLAUSE_ITEMS_PADDING, CLAUSE_HEADER_HEIGHT, COLUMN_NAME_HEIGHT
+    COLUMN_WIDTH, INCLAUSE_ITEMS_PADDING, CLAUSE_HEADER_HEIGHT, COLUMN_NAME_HEIGHT, INCOLUMN_ITEMS_PADDING
 } from "./constCanvasComponents";
 import { arraysEqual, getTextPosByHeight } from "./commonFunctions";
+
 
 interface ClauseColumnsBoxProps {
     clauseColumns: ClauseColumns;
@@ -36,7 +37,7 @@ export function ClauseColumnsBox({
         ) + INCLAUSE_ITEMS_PADDING * 2;
         // heightはすべてのfromの合計＋隙間
         const wholeHeight: number = columnHeights.reduce((acc, h, i) => {
-            return acc + ((i>0)? INCLAUSE_ITEMS_PADDING: 0) + h;
+            return acc + ((i>0)? INCOLUMN_ITEMS_PADDING: 0) + h;
         }, CLAUSE_HEADER_HEIGHT + INCLAUSE_ITEMS_PADDING*2);  // "column"のヘッダーと上下
 
         setCurWidth(wholeWidth);
@@ -101,12 +102,11 @@ export function ClauseColumnsBox({
 
             {clauseColumns.columns.map((c, i)=>{
                 // iより上のfrom句の累計 + INCLAUSE_ITEMS_PADDING
-                let yPos: number = CLAUSE_HEADER_HEIGHT;
+                let yPos: number = CLAUSE_HEADER_HEIGHT + INCLAUSE_ITEMS_PADDING;
                 for(let j=0; j<i; j++) {
-                    yPos += INCLAUSE_ITEMS_PADDING;
                     yPos += columnHeights[j];
+                    yPos += INCOLUMN_ITEMS_PADDING;
                 }
-                yPos += INCLAUSE_ITEMS_PADDING;
                 return (
                     <g
                         key={`G_ColumnBox_${i}`}
