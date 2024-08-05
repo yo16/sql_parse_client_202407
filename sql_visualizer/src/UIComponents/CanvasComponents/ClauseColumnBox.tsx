@@ -1,17 +1,19 @@
+import { useState } from "react";
+
 import { ClauseColumn } from "@/QueryComponents/ClauseColumns";
+
+import { COLUMN_WIDTH, COLUMN_NAME_HEIGHT } from "./constCanvasComponents";
 
 interface ClauseColumnBoxProps {
     clauseColumn: ClauseColumn;
-    width: number;
-    height: number;
     onSetSize: (w: number, h: number) => void;
 }
 export function ClauseColumnBox({
     clauseColumn,
-    width,
-    height,
     onSetSize,
 }: ClauseColumnBoxProps) {
+    const [curWidth, setCurWidth] = useState<number>(COLUMN_WIDTH);
+    const [curHeight, setCurHeight] = useState<number>(COLUMN_NAME_HEIGHT);
     
     return (
         <></>

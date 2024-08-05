@@ -4,35 +4,31 @@ import { ClauseFrom } from "@/QueryComponents/ClauseFroms";
 import { TableStructQuery } from "@/QueryComponents/TableStructQuery";
 import { TableStructQueryBox } from "./TableStructQueryBox";
 
-import { FROM_WIDTH, FORM_HEIGHT } from "./constCanvasComponents";
+import { FROM_WIDTH, FORM_NAME_HEIGHT } from "./constCanvasComponents";
 import { getTextPosByHeight } from "./commonFunctions";
 
 interface ClauseFromBoxProps {
     clauseFrom: ClauseFrom;
-    width: number;
-    height: number;
     onSetSize: (w: number, h: number) => void;
 }
 export function ClauseFromBox({
     clauseFrom,
-    width,
-    height,
     onSetSize,
 }: ClauseFromBoxProps) {
     // TableStructQueryのサイズ
-    const [curWidth, setCurWidth] = useState<number>(0);
-    const [curHeight, setCurHeight] = useState<number>(0);
+    const [tsqWidth, setTsqWidth] = useState<number>(FROM_WIDTH);
+    const [tsqHeight, setTsqHeight] = useState<number>(0);
 
     useEffect(()=>{
         onSetSize(
-            Math.max(width, curWidth),
-            FORM_HEIGHT + curHeight
+            Math.max(tsqWidth, FROM_WIDTH),
+            FORM_NAME_HEIGHT + tsqHeight
         );
-    }, [clauseFrom, curWidth, curHeight]);
+    }, [clauseFrom, tsqWidth, tsqHeight]);
 
     function handleOnSetTableStructQuerySize(w: number, h: number) {
-        setCurWidth(w);
-        setCurHeight(h);
+        setTsqWidth(w);
+        setTsqHeight(h);
     }
 
     return (
@@ -41,12 +37,12 @@ export function ClauseFromBox({
             <rect
                 x={0}
                 y={0}
-                width={width}
-                height={FORM_HEIGHT}
+                width={Math.max(tsqWidth, FROM_WIDTH)}
+                height={FORM_NAME_HEIGHT}
                 fill={"#333"}
             />
             <text
-                {...(getTextPosByHeight(FORM_HEIGHT))}
+                {...(getTextPosByHeight(FORM_NAME_HEIGHT))}
                 fill={"#f00"}
             >
                 {(clauseFrom.db)?`${clauseFrom.db}.`:''}{clauseFrom.tableName}
@@ -54,13 +50,11 @@ export function ClauseFromBox({
 
             {(clauseFrom.tableStruct instanceof TableStructQuery)&&
                 <g
-                    transform={`translate(${0}, ${FORM_HEIGHT})`}
+                    transform={`translate(${0}, ${FORM_NAME_HEIGHT})`}
                     name={`FromBox-Query`}
                 >
                     <TableStructQueryBox
                         tsq={clauseFrom.tableStruct}
-                        width={width}
-                        height={height}
                         onSetSize={handleOnSetTableStructQuerySize}
                     />
                 </g>

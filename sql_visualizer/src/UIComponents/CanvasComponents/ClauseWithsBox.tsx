@@ -20,20 +20,25 @@ import { arraysEqual, getTextPosByHeight } from "./commonFunctions";
 
 interface ClauseWithsBoxProps {
     clauseWiths: ClauseWiths;
-    width: number;
-    height: number;
     onSetSize: (w: number, h: number) => void;
 }
 export function ClauseWithsBox({
     clauseWiths,
-    width,
-    height,
     onSetSize
 }: ClauseWithsBoxProps) {
+    // WithsBox全体のサイズ
+    const [curWidth, setCurWidth] = useState<number>(WITH_WIDTH + INCLAUSE_ITEMS_PADDING*2);
+    const [curHeight, setCurHeight] = useState<number>(CLAUSE_HEADER_HEIGHT + INCLAUSE_ITEMS_PADDING*2);
+
+    // with要素群(ClauseWithBox)の各々のサイズ
     const [withWidths, setWithWidths] = useState<number[]>([]);
     const [withHeights, setWithHeights] = useState<number[]>([]);
-    const posManager = useRef<WithPositionManager | null>(null);
+
+    // 最終的に描画したwith句
     const curClauseWiths = useRef<ClauseWiths | null>(null);
+
+    // WithBox群の管理オブジェクト
+    const posManager = useRef<WithPositionManager | null>(null);
 
     // with句が変わったときと、各々のwithの幅・高さが変わったとき、全体を再計算
     useEffect(() => {
@@ -41,6 +46,8 @@ export function ClauseWithsBox({
         const wholeWidth: number = calcWholeWidth();
         const wholeHeight: number = calcWholeHeight();
 
+        setCurWidth(wholeWidth);
+        setCurHeight(wholeHeight);
         onSetSize(wholeWidth, wholeHeight);
     }, [clauseWiths, withWidths, withHeights])
 
@@ -198,14 +205,14 @@ export function ClauseWithsBox({
                         <rect
                             x={0}
                             y={0}
-                            width={width}
-                            height={height}
+                            width={curWidth}
+                            height={curHeight}
                             fill={"#f00"}
                         />
                         <rect
                             x={0}
                             y={0}
-                            width={width}
+                            width={curWidth}
                             height={CLAUSE_HEADER_HEIGHT}
                             fill={"#fff"}
                         />
@@ -216,6 +223,7 @@ export function ClauseWithsBox({
                         >
                             with
                         </text>
+
                         {withIndexesInCurDepth.map((withIndex: number) => {     // depth内のwithごとのループ
                             // 前のループで計算したnextYPosを設定
                             yPos = nextYPos;
@@ -232,8 +240,6 @@ export function ClauseWithsBox({
                                 >
                                     <ClauseWithBox
                                         clauseWith={clauseWiths.withs[withIndex]}
-                                        width={withWidths[withIndex]}
-                                        height={withHeights[withIndex]}
                                         onSetSize={(w, h) => handleOnSetSize(w, h, withIndex)}
                                     />
                                 </g>

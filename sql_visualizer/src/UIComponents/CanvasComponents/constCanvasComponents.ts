@@ -20,8 +20,10 @@ export const WITH_WIDTH = 100;
 // from句１つの幅
 export const FROM_WIDTH = 150;
 // from句のテーブル名の高さ
-export const FORM_HEIGHT = 30;
+export const FORM_NAME_HEIGHT = 30;
 
 // columnの幅
 export const COLUMN_WIDTH = 100;
+// columnの高さ
+export const COLUMN_NAME_HEIGHT = 30;
 

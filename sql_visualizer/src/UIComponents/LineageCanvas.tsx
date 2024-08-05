@@ -15,8 +15,11 @@ interface LineageCanvasProps {
     astList: AST[];
 }
 function LineageCanvas({ astList }: LineageCanvasProps) {
+    // SVG全体のサイズ
     const [svgWidth, setSvgWidth] = useState<number>(550);
     const [svgHeight, setSvgHeight] = useState<number>(400);
+
+    // astそれぞれのサイズ
     const [astWidths, setAstWidths] = useState<number[]>([]);
     const [astHeights, setAstHeights] = useState<number[]>([]);
     const [tableStructs, setTableStructs] = useState<TableStruct[]>([]);
@@ -39,12 +42,16 @@ function LineageCanvas({ astList }: LineageCanvasProps) {
         astHeights[i] = h;
         setAstHeights([...astHeights]);
 
-        // svgのwidthは、全部のwidthとその間のpadding、両サイドのpaddingを足した結果
-        setSvgWidth(AST_PADDING + astWidths.reduce((acc, w) => acc + w + AST_PADDING, 0));
+        // svgのwidthは、全部のwidthとその間のpadding + 両サイドのpadding
+        const newSvgWidth: number
+            = AST_PADDING + astWidths.reduce((acc, w) => acc + w + AST_PADDING, 0);
+        // svgのheightは、全部のheightの最大 + 上下のpadding
+        const newSvgHeight: number
+            = astHeights.reduce((acc, h) => (acc < h)? h: acc, 0)
+            + AST_PADDING*2;
 
-        // svgのheightは、全部のheightの最大
-        const maxHeight: number = astHeights.reduce((acc, h) => (acc < h)? h: acc, svgHeight);
-        setSvgHeight(maxHeight);
+        setSvgWidth(newSvgWidth);
+        setSvgHeight(newSvgHeight);
     }
 
     
@@ -69,8 +76,6 @@ function LineageCanvas({ astList }: LineageCanvasProps) {
                                 >
                                     <TableStructQueryBox
                                         tsq={ts as TableStructQuery}
-                                        width={astWidths[i]}
-                                        height={astHeights[i]}
                                         onSetSize={(w: number, h: number) => {handleOnSetSize(w, h, i)}}
                                     />
                                 </g>

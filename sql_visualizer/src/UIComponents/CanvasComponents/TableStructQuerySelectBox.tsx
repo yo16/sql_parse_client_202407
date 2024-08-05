@@ -4,20 +4,23 @@ import { QuerySelect } from "@/QueryComponents/QuerySelect";
 import { ClauseWithsBox } from "./ClauseWithsBox";
 import { ClauseFromsBox } from "./ClauseFromsBox";
 import { ClauseColumnsBox } from "./ClauseColumnsBox";
-import { QUERY_ITEMS_PADDING, WITH_WIDTH, FROM_WIDTH, COLUMN_WIDTH, INITIAL_HEIGHT } from "./constCanvasComponents";
+import {
+    CLAUSE_HEADER_HEIGHT, QUERY_ITEMS_PADDING, FROM_WIDTH, COLUMN_WIDTH, INITIAL_HEIGHT
+} from "./constCanvasComponents";
 
 interface TableStructQuerySelectBoxProps {
     select: QuerySelect;
-    width: number;
-    height: number;
     onSetSize: (w: number, h: number) => void;
 }
 export function TableStructQuerySelectBox({
     select,
-    width,
-    height,
     onSetSize,
 }: TableStructQuerySelectBoxProps) {
+    // SelectBox全体のサイズ
+    const [curWidth, setCurWidth] = useState<number>(FROM_WIDTH + COLUMN_WIDTH + QUERY_ITEMS_PADDING*3);
+    const [curHeight, setCurHeight] = useState<number>(CLAUSE_HEADER_HEIGHT  + QUERY_ITEMS_PADDING*2);
+
+    // with句、from句、columnそれぞれのサイズ
     const [withsWidth, setWithsWidth] = useState<number>(0);
     const [withsHeight, setWithsHeight] = useState<number>(0);
     const [fromsWidth, setFromsWidth] = useState<number>(FROM_WIDTH);
@@ -28,10 +31,21 @@ export function TableStructQuerySelectBox({
     // with、from、columnの各々のサイズから、全体のサイズを計算してsetSizeを呼び出す
     useEffect(() => {
         // 幅：３つのアイテム＋アイテム間の隙間(2)＋左右の隙間(2)
+        const newWidth: number
+            = QUERY_ITEMS_PADDING
+            + ((select.withs.length > 0)? (withsWidth + QUERY_ITEMS_PADDING): 0)
+            + fromsWidth + QUERY_ITEMS_PADDING
+            + columnsWidth + QUERY_ITEMS_PADDING;
         // 高さ：最大の高さ＋上下の隙間(2)
+        const newHeight: number
+            = Math.max(withsHeight, fromsHeight, columnsHeight)
+            + QUERY_ITEMS_PADDING * 2;
+        
+        setCurWidth(newWidth);
+        setCurHeight(newHeight);
         onSetSize(
-            withsWidth + fromsWidth + columnsWidth + QUERY_ITEMS_PADDING*((select.withs.length > 0)? 4: 3),
-            Math.max(withsHeight, fromsHeight, columnsHeight) + QUERY_ITEMS_PADDING*2
+            newWidth,
+            newHeight
         );
     }, [
         select,
@@ -68,8 +82,8 @@ export function TableStructQuerySelectBox({
             <rect
                 x={0}
                 y={0}
-                width={width}
-                height={height}
+                width={curWidth}
+                height={curHeight}
                 rx={5}
                 ry={5}
                 fill={"#dee"}
@@ -84,8 +98,6 @@ export function TableStructQuerySelectBox({
             >
                 <ClauseWithsBox
                     clauseWiths={select.withs}
-                    width={withsWidth}
-                    height={withsHeight}
                     onSetSize={handleOnSetWithsSize}
                 />
             </g>
@@ -94,8 +106,6 @@ export function TableStructQuerySelectBox({
             <g transform={`translate(${fromsStartX}, ${QUERY_ITEMS_PADDING})`}>
                 <ClauseFromsBox
                     clauseFroms={select.froms}
-                    width={fromsWidth}
-                    height={fromsHeight}
                     onSetSize={handleOnSetFromsSize}
                 />
             </g>
@@ -103,9 +113,7 @@ export function TableStructQuerySelectBox({
             {/* Columns */}
             <g transform={`translate(${columnsStartX}, ${QUERY_ITEMS_PADDING})`}>
                 <ClauseColumnsBox
-                    columns={select.columns}
-                    width={columnsWidth}
-                    height={columnsHeight}
+                    clauseColumns={select.columns}
                     onSetSize={handleOnSetColumnsSize}
                 />
             </g>

@@ -12,6 +12,10 @@ export class ClauseColumns {
 
         this._columnObjs = columns.map((c) => new ClauseColumn(c));
     }
+
+    get columns(): ClauseColumn[] {
+        return this._columnObjs;
+    }
 }
 
 

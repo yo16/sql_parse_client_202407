@@ -5,14 +5,10 @@ import { TableStructQuerySelectBox } from "./TableStructQuerySelectBox";
 
 interface ClauseWithBoxProps {
     clauseWith: ClauseWith;
-    width: number;
-    height: number;
     onSetSize: (w: number, h: number) => void;
 }
 export function ClauseWithBox({
     clauseWith,
-    width,
-    height,
     onSetSize,
 }: ClauseWithBoxProps) {
     function handleOnSetSize(w: number, h: number) {
@@ -23,8 +19,6 @@ export function ClauseWithBox({
         <>
             <TableStructQuerySelectBox
                 select={clauseWith.select}
-                width={width}
-                height={height}
                 onSetSize={handleOnSetSize}
             />
         </>

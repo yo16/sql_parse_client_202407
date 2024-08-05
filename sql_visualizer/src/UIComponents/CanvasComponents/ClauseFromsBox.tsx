@@ -3,34 +3,43 @@ import { useState, useEffect, useRef } from "react";
 import { ClauseFroms } from "@/QueryComponents/ClauseFroms";
 import { ClauseFromBox } from "./ClauseFromBox";
 
-import { CLAUSE_HEADER_HEIGHT, INITIAL_HEIGHT, INCLAUSE_ITEMS_PADDING, FROM_WIDTH } from "./constCanvasComponents";
+import {
+    CLAUSE_HEADER_HEIGHT, INITIAL_HEIGHT, INCLAUSE_ITEMS_PADDING, FROM_WIDTH, FORM_NAME_HEIGHT
+} from "./constCanvasComponents";
 import { arraysEqual, getTextPosByHeight } from "./commonFunctions";
 
 interface ClauseFromsBoxProps {
     clauseFroms: ClauseFroms;
-    width: number;
-    height: number;
     onSetSize: (w: number, h: number) => void;
 }
 export function ClauseFromsBox({
     clauseFroms,
-    width,
-    height,
     onSetSize,
 }: ClauseFromsBoxProps) {
+    // FromsBox全体のサイズ
+    const [curWidth, setCurWidth] = useState<number>(FROM_WIDTH + INCLAUSE_ITEMS_PADDING*2);
+    const [curHeight, setCurHeight] = useState<number>(CLAUSE_HEADER_HEIGHT + INCLAUSE_ITEMS_PADDING*2);
+
+    // from要素群(ClauseFromBox)の各々のサイズ
     const [fromWidths, setFromWidths] = useState<number[]>([]);
     const [fromHeights, setFromHeights] = useState<number[]>([]);
+
+    // 最終的に描画したfrom句
     const curClauseFroms = useRef<ClauseFroms | null>(null);
 
     useEffect(()=>{
         // 全体のサイズを計算してonSetSizeを呼ぶ
         // widthはfromWidthの最大値
-        const wholeWidth: number = (fromWidths.length > 0)? Math.max(...fromWidths)+INCLAUSE_ITEMS_PADDING*2: FROM_WIDTH;
+        const wholeWidth: number = (
+            (fromWidths.length > 0)? Math.max(...fromWidths): FROM_WIDTH
+        ) + INCLAUSE_ITEMS_PADDING * 2;
         // heightはすべてのfromの合計＋隙間
         const wholeHeight: number = fromHeights.reduce((acc, h, i) => {
             return acc + ((i>0)? INCLAUSE_ITEMS_PADDING: 0) + h;
-        }, CLAUSE_HEADER_HEIGHT) + INCLAUSE_ITEMS_PADDING*2;  // 上下
+        }, CLAUSE_HEADER_HEIGHT + INCLAUSE_ITEMS_PADDING*2);  // "from"のヘッダーと上下
 
+        setCurWidth(wholeWidth);
+        setCurHeight(wholeHeight);
         onSetSize(wholeWidth, wholeHeight);
     }, [clauseFroms, fromWidths, fromHeights]);
 
@@ -45,15 +54,22 @@ export function ClauseFromsBox({
     }
 
     // 初期化
-    function initializeValues() {
-        setFromWidths(clauseFroms.froms.map((f)=>FROM_WIDTH));
-        setFromHeights(clauseFroms.froms.map((f)=>INITIAL_HEIGHT));
+    function initializeValues(newFrom: ClauseFroms) {
+        // fromWidths, fromHeihtsを初期化
+        const initialFromWidth: number[] = newFrom.froms.map((_) => FROM_WIDTH);
+        if (!arraysEqual(fromWidths, initialFromWidth)) {
+            setFromWidths(initialFromWidth);
+        }
+        const initialFromHeight: number[] = newFrom.froms.map((_) => INITIAL_HEIGHT);
+        if (!arraysEqual(fromHeights, initialFromHeight)) {
+            setFromWidths(initialFromHeight);
+        }
     }
 
     // from句が変わった場合に、初期化
     // ただし描画の前で実行する必要があるため、タイミングの遅いフックは使えない
     if (curClauseFroms.current !== clauseFroms) {   // インスタンスの比較
-        initializeValues();
+        initializeValues(clauseFroms);
         curClauseFroms.current = clauseFroms;
     }
 
@@ -62,15 +78,15 @@ export function ClauseFromsBox({
             <rect
                 x={0}
                 y={0}
-                width={width}
-                height={height}
+                width={curWidth}
+                height={curHeight}
                 fill={"#0f0"}
             />
             
             <rect
                 x={0}
                 y={0}
-                width={width}
+                width={curWidth}
                 height={CLAUSE_HEADER_HEIGHT}
                 fill={"#fff"}
             />
@@ -98,8 +114,6 @@ export function ClauseFromsBox({
                     >
                         <ClauseFromBox
                             clauseFrom={f}
-                            width={fromWidths[i]}
-                            height={fromHeights[i]}
                             onSetSize={(w, h)=>handleOnSetSize(w, h, i)}
                         />
                     </g>

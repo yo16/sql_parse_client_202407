@@ -1,26 +1,126 @@
+import { useState, useEffect, useRef } from "react";
+
 import { ClauseColumns } from "@/QueryComponents/ClauseColumns";
+import { ClauseColumnBox } from "./ClauseColumnBox";
+
+import {
+    COLUMN_WIDTH, INCLAUSE_ITEMS_PADDING, CLAUSE_HEADER_HEIGHT, COLUMN_NAME_HEIGHT
+} from "./constCanvasComponents";
+import { arraysEqual, getTextPosByHeight } from "./commonFunctions";
 
 interface ClauseColumnsBoxProps {
-    columns: ClauseColumns;
-    width: number;
-    height: number;
+    clauseColumns: ClauseColumns;
     onSetSize: (w: number, h: number) => void;
 }
 export function ClauseColumnsBox({
-    columns,
-    width,
-    height,
+    clauseColumns,
     onSetSize,
 }: ClauseColumnsBoxProps) {
+    // columnsBox全体のサイズ
+    const [curWidth, setCurWidth] = useState<number>(COLUMN_WIDTH + INCLAUSE_ITEMS_PADDING*2);
+    const [curHeight, setCurHeight] = useState<number>(CLAUSE_HEADER_HEIGHT + INCLAUSE_ITEMS_PADDING*2);
+
+    // column要素群(ClauseColumnBox)の各々のサイズ
+    const [columnWidths, setColumnWidths] = useState<number[]>([]);
+    const [columnHeights, setColumnHeights] = useState<number[]>([]);
+
+    // 最終的に描画したcolumn句
+    const curClauseColumns = useRef<ClauseColumns | null>(null);
+
+
+    useEffect(()=>{
+        // 全体のサイズを計算してonSetSizeを呼ぶ
+        // widthはfromWidthの最大値
+        const wholeWidth: number = (
+            (columnWidths.length > 0)? Math.max(...columnWidths): COLUMN_WIDTH
+        ) + INCLAUSE_ITEMS_PADDING * 2;
+        // heightはすべてのfromの合計＋隙間
+        const wholeHeight: number = columnHeights.reduce((acc, h, i) => {
+            return acc + ((i>0)? INCLAUSE_ITEMS_PADDING: 0) + h;
+        }, CLAUSE_HEADER_HEIGHT + INCLAUSE_ITEMS_PADDING*2);  // "column"のヘッダーと上下
+
+        setCurWidth(wholeWidth);
+        setCurHeight(wholeHeight);
+        onSetSize(wholeWidth, wholeHeight);
+    }, [clauseColumns, columnWidths, columnHeights]);
+    
+    // 初期化
+    function initializeValues(newColumns: ClauseColumns) {
+        // columnWidths, columnHeihtsを初期化
+        const initialColumnWidths: number[] = newColumns.columns.map((_) => COLUMN_WIDTH);
+        if (!arraysEqual(columnWidths, initialColumnWidths)) {
+            setColumnWidths(initialColumnWidths);
+        }
+        const initialColumnHeights: number[] = newColumns.columns.map((_) => COLUMN_NAME_HEIGHT);
+        if (!arraysEqual(columnHeights, initialColumnHeights)) {
+            setColumnHeights(initialColumnHeights);
+        }
+    }
+
+    function handleOnSetSize(w: number, h: number, i: number) {
+        // ローカルのuseState値を更新
+        columnWidths[i] = w;
+        setColumnWidths([...columnWidths]);
+
+        // ローカルのuseState値を更新
+        columnHeights[i] = h;
+        setColumnHeights([...columnHeights]);
+    }
+
+    // column句が変わった場合に、初期化
+    // ただし描画の前で実行する必要があるため、タイミングの遅いフックは使えない
+    if (curClauseColumns.current !== clauseColumns) {   // インスタンスの比較
+        initializeValues(clauseColumns);
+        curClauseColumns.current = clauseColumns;
+    }
+
     return (
         <>
             <rect
                 x={0}
                 y={0}
-                width={width}
-                height={height}
+                width={curWidth}
+                height={curHeight}
                 fill={"#00f"}
             />
+            
+            <rect
+                x={0}
+                y={0}
+                width={curWidth}
+                height={CLAUSE_HEADER_HEIGHT}
+                fill={"#fff"}
+            />
+            <text
+                {...(getTextPosByHeight(CLAUSE_HEADER_HEIGHT))}
+                fontStyle={"italic"}
+                fill={"#f00"}
+            >
+                column
+            </text>
+
+            {clauseColumns.columns.map((c, i)=>{
+                // iより上のfrom句の累計 + INCLAUSE_ITEMS_PADDING
+                let yPos: number = CLAUSE_HEADER_HEIGHT;
+                for(let j=0; j<i; j++) {
+                    yPos += INCLAUSE_ITEMS_PADDING;
+                    yPos += columnHeights[j];
+                }
+                yPos += INCLAUSE_ITEMS_PADDING;
+                return (
+                    <g
+                        key={`G_ColumnBox_${i}`}
+                        transform={`translate(${INCLAUSE_ITEMS_PADDING}, ${yPos})`}
+                        name={`ColumnBox-${i}`}
+                    >
+                        <ClauseColumnBox
+                            clauseColumn={c}
+                            onSetSize={(w, h)=>handleOnSetSize(w, h, i)}
+                        />
+                    </g>
+                )
+            })}
+
         </>
     );
 }

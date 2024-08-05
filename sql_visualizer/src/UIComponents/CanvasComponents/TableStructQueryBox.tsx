@@ -6,14 +6,10 @@ import { QuerySelect } from "@/QueryComponents/QuerySelect";
 
 interface TableStructQueryBoxProps {
     tsq: TableStructQuery;
-    width: number;
-    height: number;
     onSetSize: (w: number, h: number) => void;
 }
 function TableStructQueryBox({
     tsq,
-    width,
-    height,
     onSetSize,
 }: TableStructQueryBoxProps) {
     function handleOnSetSize(w: number, h: number) {
@@ -26,8 +22,6 @@ function TableStructQueryBox({
             {(tsq instanceof QuerySelect) &&
                 <TableStructQuerySelectBox
                     select={tsq as QuerySelect}
-                    width={width}
-                    height={height}
                     onSetSize={handleOnSetSize}
                 />
             }
