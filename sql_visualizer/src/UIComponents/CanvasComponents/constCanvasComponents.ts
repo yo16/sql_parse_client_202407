@@ -29,3 +29,10 @@ export const COLUMN_NAME_HEIGHT = 30;
 // column要素内の隙間
 export const INCOLUMN_ITEMS_PADDING = 2;
 
+// columnElement要素間の隙間
+export const COLELM_ITEMS_PADDING = 2;
+
+// columnElementの高さ
+export const COLELM_HEIGHT = 10;
+// columnElementのインデント
+export const COLELM_INDENT_WIDTH = 20;

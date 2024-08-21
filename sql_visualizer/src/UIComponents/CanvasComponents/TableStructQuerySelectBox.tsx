@@ -92,6 +92,7 @@ export function TableStructQuerySelectBox({
             />
 
             {/* Withs */}
+            {/*
             <g
                 transform={`translate(${QUERY_ITEMS_PADDING}, ${QUERY_ITEMS_PADDING})`}
                 name="WithsBoxGroup"
@@ -101,14 +102,17 @@ export function TableStructQuerySelectBox({
                     onSetSize={handleOnSetWithsSize}
                 />
             </g>
+            */}
             
             {/* Froms */}
+            {/*
             <g transform={`translate(${fromsStartX}, ${QUERY_ITEMS_PADDING})`}>
                 <ClauseFromsBox
                     clauseFroms={select.froms}
                     onSetSize={handleOnSetFromsSize}
                 />
             </g>
+            */}
 
             {/* Columns */}
             <g transform={`translate(${columnsStartX}, ${QUERY_ITEMS_PADDING})`}>
