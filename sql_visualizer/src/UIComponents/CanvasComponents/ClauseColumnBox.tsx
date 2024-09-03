@@ -4,37 +4,62 @@ import { ClauseColumn } from "@/QueryComponents/ClauseColumns";
 import { TableColumns } from "@/QueryComponents/TableColumns";
 import { ColumnElementsBox } from "./ColumnElementsBox";
 
-import { COLUMN_WIDTH, COLUMN_NAME_HEIGHT } from "./constCanvasComponents";
+import type { BoxSize } from "./types";
+import { COLUMN_NAME_HEIGHT } from "./constCanvasComponents";
 import { getTextPosByHeight } from "./commonFunctions";
 
 
 interface ClauseColumnBoxProps {
     clauseColumn: ClauseColumn;
-    onSetSize: (w: number, h: number) => void;
+    onSetSize: (newSize: BoxSize) => void;
 }
 export function ClauseColumnBox({
     clauseColumn,
     onSetSize,
 }: ClauseColumnBoxProps) {
-    const [curWidth, setCurWidth] = useState<number>(COLUMN_WIDTH);
-    const [curHeight, setCurHeight] = useState<number>(COLUMN_NAME_HEIGHT);
+    // この要素のサイズ
+    const [curSize, setCurSize] = useState<BoxSize>({width: 0, height: 0});
+//    //const [curWidth, setCurWidth] = useState<number>(COLUMN_WIDTH);
+//    //const [curHeight, setCurHeight] = useState<number>(COLUMN_NAME_HEIGHT);
 
-    const [columnElementsWidth, setColumnElementsWidth] = useState<number>(0);
-    const [columnElementsHeight, setColumnElementsHeight] = useState<number>(0);
+    // ElementsBoxのサイズ（Element"s"は１つしかない）
+//    //const [columnElementsWidth, setColumnElementsWidth] = useState<number>(0);
+//    //const [columnElementsHeight, setColumnElementsHeight] = useState<number>(0);
+    const [columnElementsSize, setColumnElementsSize] = useState<BoxSize>({width: 0, height: 0});
+
+//    useEffect(() => {
+//        const newWidth: number = Math.max(COLUMN_WIDTH, curWidth)
+//        const newHeight: number = COLUMN_NAME_HEIGHT + columnElementsHeight;
+//    
+//        setCurWidth(newWidth);
+//        setCurHeight(newHeight);
+//        onSetSize(curWidth, newHeight);
+//    }, [clauseColumn, columnElementsWidth, columnElementsHeight])
+
+    function handleOnSetSize(newSize: BoxSize) {
+        setColumnElementsSize(newSize);
+//        setColumnElementsWidth(w);
+//        setColumnElementsHeight(h);
+    }
 
     useEffect(() => {
-        const newWidth: number = Math.max(COLUMN_WIDTH, curWidth)
-        const newHeight: number = COLUMN_NAME_HEIGHT + columnElementsHeight;
+        // ClauseColumBoxのサイズ
+        const newCurWidth: number = columnElementsSize.width;
+        const newCurHeight: number = COLUMN_NAME_HEIGHT + columnElementsSize.width;
 
-        setCurWidth(newWidth);
-        setCurHeight(newHeight);
-        onSetSize(curWidth, newHeight);
-    }, [clauseColumn, columnElementsWidth, columnElementsHeight])
+        // statusを変更
+        setCurSize({
+            width: newCurWidth,
+            height: newCurHeight
+        });
+        
+        // 自分のサイズを通知
+        onSetSize({
+            width: newCurWidth,
+            height: newCurHeight
+        });
+    }, [columnElementsSize]);
 
-    function handleOnSetSize(w: number, h: number) {
-        setColumnElementsWidth(w);
-        setColumnElementsHeight(h);
-    }
     
     const tc: TableColumns = clauseColumn.tableCols;
     const columnName: string = clauseColumn.columnName;
@@ -43,8 +68,8 @@ export function ClauseColumnBox({
             <rect
                 x={0}
                 y={0}
-                width={curWidth}
-                height={curHeight}
+                width={curSize.width}
+                height={curSize.height}
                 fill={"#ff0"}
             />
             <text
@@ -55,7 +80,7 @@ export function ClauseColumnBox({
 
             {(tc.columnCount>1) && (
                 <g
-                    transform={`translate(0, ${curHeight})`}
+                    transform={`translate(0, ${curSize.height})`}
                 >
                     <ColumnElementsBox
                         tableColumns={tc}

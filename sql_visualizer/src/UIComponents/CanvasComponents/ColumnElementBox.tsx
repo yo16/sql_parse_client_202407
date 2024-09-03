@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+
 import {
     COLUMN_WIDTH, COLELM_HEIGHT, COLELM_INDENT_WIDTH
 } from "./constCanvasComponents";
@@ -15,6 +17,11 @@ export function ColumnElementBox({
     columnName,
     onSetSize,
 }: ColumnElementBoxProps) {
+    // この要素のサイズ
+    const [curSize] = useState<BoxSize>(
+        {width: COLUMN_WIDTH, height: COLELM_HEIGHT}
+    );
+
     // 高さに合った位置を計算
     const textPosBase = getTextPosByHeight(COLELM_HEIGHT);
     // x位置をインデント分、ずらす
@@ -24,16 +31,19 @@ export function ColumnElementBox({
         return `${tableName}.${columnName}`;
     }
     
-    onSetSize({width: COLUMN_WIDTH, height: COLELM_HEIGHT});
-    console.log(tableName, columnName);
+    // この要素のサイズは変わらないので、初回だけ、親へ通知
+    useEffect(
+        () => onSetSize({width: COLUMN_WIDTH, height: COLELM_HEIGHT} as BoxSize),
+        []
+    );
 
     return (
         <>
             <rect
                 x={0}
                 y={0}
-                width={COLUMN_WIDTH}
-                height={COLELM_HEIGHT}
+                width={curSize.width}
+                height={curSize.height}
                 fill={"#ccc"}
             />
             <text

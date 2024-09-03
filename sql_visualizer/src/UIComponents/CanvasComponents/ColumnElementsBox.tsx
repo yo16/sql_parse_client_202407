@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 import { TableColumns } from "@/QueryComponents/TableColumns";
 import { ColumnElementBox } from "./ColumnElementBox";
@@ -9,12 +9,14 @@ import { COLELM_ITEMS_PADDING } from "./constCanvasComponents";
 // １つの列のために利用する列群
 interface ColumnElementsBoxProps {
     tableColumns: TableColumns;
-    onSetSize: (w: number, h: number) => void;
+    onSetSize: (newBox: BoxSize) => void;
 }
 export function ColumnElementsBox({
     tableColumns,
     onSetSize,
 }: ColumnElementsBoxProps) {
+    // この要素のサイズ
+    const [curSize, setCurSize] = useState<BoxSize>({width: 0, height: 0});
     // ColumnElement要素たちのサイズ
     const [colElmsSize, setColElmnsSize]
         = useState<BoxSize[]>(
@@ -43,25 +45,44 @@ export function ColumnElementsBox({
         );
 
     // 自分のサイズを計算
-    const curWidth: number = colElmsSize.reduce(
-        (acc, curSize) => ((acc < curSize.width)? curSize.width: acc),
-        0
-    );
-    const curHeight: number = useMemo(() => colElmsSize.reduce(
-        (acc, curSize, i) => acc + ((i > 0)? COLELM_ITEMS_PADDING: 0) + curSize.height,
-        0
-    ), [colElmsSize]);
+    function getCurWidth() {
+        return colElmsSize.reduce(
+            (acc, curSize) => ((acc < curSize.width)? curSize.width: acc),
+            0
+        );
+    }
+    function getCurHeight() {
+        return colElmsSize.reduce(
+            (acc, curSize, i) => acc + ((i > 0)? COLELM_ITEMS_PADDING: 0) + curSize.height,
+            0
+        );
+    }
 
-    // 自分のサイズを通知
-    onSetSize(curWidth, curHeight);
+    useEffect(() => {
+        const newCurWidth: number = getCurWidth();
+        const newCurHeight: number = getCurHeight();
+
+        // statusを更新
+        setCurSize({
+            width: newCurWidth,
+            height: newCurHeight
+        });
+
+        // この要素のサイズを通知
+        onSetSize({
+            width: newCurWidth,
+            height: newCurHeight
+        });
+    }, [colElmsSize]);
+
 
     return (
         <>
             <rect
                 x={0}
                 y={0}
-                width={curWidth}
-                height={curHeight}
+                width={curSize.width}
+                height={curSize.height}
                 fill="#f00"
             />
             {tableColumnYvalList.map((tc, i)=>(

@@ -115,7 +115,10 @@ export function TableStructQuerySelectBox({
             */}
 
             {/* Columns */}
-            <g transform={`translate(${columnsStartX}, ${QUERY_ITEMS_PADDING})`}>
+            <g
+                transform={`translate(${columnsStartX}, ${QUERY_ITEMS_PADDING})`}
+                name={`TableStructQuerySelectBox`}
+            >
                 <ClauseColumnsBox
                     clauseColumns={select.columns}
                     onSetSize={handleOnSetColumnsSize}

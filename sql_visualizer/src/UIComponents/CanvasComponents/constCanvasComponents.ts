@@ -22,12 +22,12 @@ export const FROM_WIDTH = 150;
 // from句のテーブル名の高さ
 export const FORM_NAME_HEIGHT = 30;
 
+// columns要素内の隙間
+export const INCOLUMNS_ITEMS_PADDING = 2;
 // columnの幅
 export const COLUMN_WIDTH = 100;
-// columnの高さ
+// columnの列名を書く部分の高さ
 export const COLUMN_NAME_HEIGHT = 30;
-// column要素内の隙間
-export const INCOLUMN_ITEMS_PADDING = 2;
 
 // columnElement要素間の隙間
 export const COLELM_ITEMS_PADDING = 2;
