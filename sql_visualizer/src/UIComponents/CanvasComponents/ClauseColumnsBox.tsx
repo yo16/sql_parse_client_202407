@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 import { ClauseColumns } from "@/QueryComponents/ClauseColumns";
 import { ClauseColumnBox } from "./ClauseColumnBox";
@@ -25,12 +25,12 @@ export function ClauseColumnsBox({
     // columnsBox全体のサイズ
     //const [curWidth, setCurWidth] = useState<number>(width: COLUMN_WIDTH + INCLAUSE_ITEMS_PADDING*2);
     //const [curHeight, setCurHeight] = useState<number>(CLAUSE_HEADER_HEIGHT + INCLAUSE_ITEMS_PADDING*2);
-    const [curSize, setCurSize] = useState<{width: number, height: number}>(
-        {
-            width: COLUMN_WIDTH + INCLAUSE_ITEMS_PADDING*2,
-            height: CLAUSE_HEADER_HEIGHT + INCLAUSE_ITEMS_PADDING*2
-        }
-    )
+    //const [curSize, setCurSize] = useState<{width: number, height: number}>(
+    //    {
+    //        width: COLUMN_WIDTH + INCLAUSE_ITEMS_PADDING*2,
+    //        height: CLAUSE_HEADER_HEIGHT + INCLAUSE_ITEMS_PADDING*2
+    //    }
+    //)
 
     // column要素群(ClauseColumnBox)の各々のサイズ
 //    const [columnWidths, setColumnWidths] = useState<number[]>([]);
@@ -38,6 +38,21 @@ export function ClauseColumnsBox({
     const [columnsSize, setColumnsSize] = useState<BoxSize[]>(
         () => initializeColumnsSize(clauseColumns.columnCount)
     );
+
+    // columnsBox全体のサイズ
+    const curSize: BoxSize = useMemo(
+        () => {
+            const newWidth = getCurWidth();
+            const newHeight = getCurHeight();
+
+            return {
+                width: newWidth,
+                height: newHeight
+            };
+        },
+        [columnsSize]
+    );
+
     //// clauseColumnsが変わったら、配列要素数が変わるため、再定義する
     //useEffect(() => {
     //    setColumnsSize(initializeColumnsSize(clauseColumns.columnCount));
@@ -95,20 +110,10 @@ export function ClauseColumnsBox({
         );
     }
 
-    useEffect(()=>{
-        console.log({columnsSize})
-
-        const newWidth = getCurWidth();
-        const newHeight = getCurHeight();
-
-        // stateを更新
-        setCurSize({width: newWidth, height: newHeight});
-
-        // この要素のサイズを通知
-        onSetSize(newWidth, newHeight);
-        
-        console.log(`newHeight: ${newHeight}`)
-    }, [columnsSize]);
+    useEffect(
+        () => onSetSize(curSize.width, curSize.height),
+        [columnsSize]
+    );
 
 //    function handleOnSetSize(w: number, h: number, i: number) {
 //        // ローカルのuseState値を更新

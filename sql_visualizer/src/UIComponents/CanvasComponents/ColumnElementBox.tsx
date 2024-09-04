@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 import {
     COLUMN_WIDTH, COLELM_HEIGHT, COLELM_INDENT_WIDTH
@@ -18,8 +18,9 @@ export function ColumnElementBox({
     onSetSize,
 }: ColumnElementBoxProps) {
     // この要素のサイズ
-    const [curSize] = useState<BoxSize>(
-        {width: COLUMN_WIDTH, height: COLELM_HEIGHT}
+    const curSize: BoxSize = useMemo(
+        ()=>({width: COLUMN_WIDTH, height: COLELM_HEIGHT}),
+        []
     );
 
     // 高さに合った位置を計算
@@ -33,7 +34,7 @@ export function ColumnElementBox({
     
     // この要素のサイズは変わらないので、初回だけ、親へ通知
     useEffect(
-        () => onSetSize({width: COLUMN_WIDTH, height: COLELM_HEIGHT} as BoxSize),
+        () => onSetSize(curSize),
         []
     );
 

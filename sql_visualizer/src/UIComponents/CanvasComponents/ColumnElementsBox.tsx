@@ -15,13 +15,24 @@ export function ColumnElementsBox({
     tableColumns,
     onSetSize,
 }: ColumnElementsBoxProps) {
-    // この要素のサイズ
-    const [curSize, setCurSize] = useState<BoxSize>({width: 0, height: 0});
     // ColumnElement要素たちのサイズ
     const [colElmsSize, setColElmnsSize]
         = useState<BoxSize[]>(
             () => new Array(tableColumns.columnCount).fill({width:0, height:0})
         );
+    // この要素のサイズ
+    const curSize: BoxSize = useMemo(
+        () => {
+            const newCurWidth: number = getCurWidth();
+            const newCurHeight: number = getCurHeight();
+
+            return {
+                width: newCurWidth,
+                height: newCurHeight
+            };
+        },
+        [colElmsSize]
+    );
     
     // i番目のサイズ変更時のハンドル
     function handleOnSetSize(newBoxSize: BoxSize, i: number) {
@@ -58,22 +69,11 @@ export function ColumnElementsBox({
         );
     }
 
-    useEffect(() => {
-        const newCurWidth: number = getCurWidth();
-        const newCurHeight: number = getCurHeight();
-
-        // statusを更新
-        setCurSize({
-            width: newCurWidth,
-            height: newCurHeight
-        });
-
-        // この要素のサイズを通知
-        onSetSize({
-            width: newCurWidth,
-            height: newCurHeight
-        });
-    }, [colElmsSize]);
+    // この要素のサイズを通知
+    useEffect(
+        () => onSetSize(curSize),
+        [colElmsSize]
+    );
 
 
     return (
