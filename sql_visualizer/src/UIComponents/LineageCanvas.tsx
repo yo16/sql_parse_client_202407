@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { AST } from "node-sql-parser";
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 
@@ -22,19 +22,41 @@ function LineageCanvas({ astList }: LineageCanvasProps) {
     // astそれぞれのサイズ
     const [astWidths, setAstWidths] = useState<number[]>([]);
     const [astHeights, setAstHeights] = useState<number[]>([]);
-    const [tableStructs, setTableStructs] = useState<TableStruct[]>([]);
+
+    // keyで使用するタイムスタンプ文字列
+    // astListが変わるたびに、過去のコンポーネント（子たちを含む））破棄させるために、keyにタイムスタンプを埋める
+    const drawTimestamp: string = useMemo(
+        () => {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0'); // 月は0から始まるため+1
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const millisconds = String(now.getMilliseconds()).padStart(4, '0');
+
+            return `${year}${month}${day}_${hours}${minutes}${seconds}_${millisconds}`;
+        },
+        [astList]
+    );
 
     // デフォルトの幅は平等、高さは元の高さのまま
     useEffect(() => {
         // 幅は、左右とast同士の隙間を除いて、等分
         setAstWidths(astList.map(()=>(svgWidth - AST_PADDING*2 - AST_PADDING*(astList.length-1))/(astList.length)));
         setAstHeights(astList.map(()=>(svgHeight-AST_PADDING*2)));
-
-        // ASTから、TableStructQueryへ変換
-        const queries: (TableStructQuery | null)[] = astList.map((ast) => getTableStructQueryObj(ast));
-        const queriesNotNull : TableStructQuery[] = queries.filter((q) => q!==null);
-        setTableStructs(queriesNotNull);
     }, [astList]);
+
+    // ASTから、TableStructQueryへ変換
+    const tableStructs: TableStruct[] = useMemo(
+        () => {
+            const queries: (TableStructQuery | null)[] = astList.map((ast) => getTableStructQueryObj(ast));
+            const queriesNotNull : TableStructQuery[] = queries.filter((q) => q!==null);
+            return queriesNotNull;
+        },
+        [astList]
+    );
 
     function handleOnSetSize(w: number, h: number, i: number) {
         astWidths[i] = w;
@@ -71,7 +93,7 @@ function LineageCanvas({ astList }: LineageCanvasProps) {
                         if (ts instanceof TableStructQuery) {
                             return (
                                 <g
-                                    key={`G_TableStructQueryBox_${i}`}
+                                    key={`G_TableStructQueryBox_${drawTimestamp}_${i}`}
                                     transform={`translate(${AST_PADDING + astWidths.slice(0, i).reduce((acc, w) => acc + w + AST_PADDING, 0)}, ${AST_PADDING})`}
                                 >
                                     <TableStructQueryBox

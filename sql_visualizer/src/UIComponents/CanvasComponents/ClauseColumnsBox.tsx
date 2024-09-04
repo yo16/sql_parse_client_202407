@@ -16,7 +16,7 @@ function initializeColumnsSize(colCount: number): BoxSize[] {
 
 interface ClauseColumnsBoxProps {
     clauseColumns: ClauseColumns;
-    onSetSize: (w: number, h: number) => void;
+    onSetSize: (newSize: BoxSize) => void;
 }
 export function ClauseColumnsBox({
     clauseColumns,
@@ -111,7 +111,7 @@ export function ClauseColumnsBox({
     }
 
     useEffect(
-        () => onSetSize(curSize.width, curSize.height),
+        () => onSetSize(curSize),
         [columnsSize]
     );
 
