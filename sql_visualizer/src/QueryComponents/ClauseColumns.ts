@@ -16,6 +16,10 @@ export class ClauseColumns {
     get columns(): ClauseColumn[] {
         return this._columnObjs;
     }
+
+    get columnCount(): number {
+        return this._columns.length;
+    }
 }
 
 

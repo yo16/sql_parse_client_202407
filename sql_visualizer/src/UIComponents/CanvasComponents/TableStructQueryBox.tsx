@@ -3,6 +3,7 @@ import { TableStructQuery } from "@QueryComponents/TableStructQuery";
 import { TableStructQuerySelectBox } from "./TableStructQuerySelectBox";
 import { QuerySelect } from "@/QueryComponents/QuerySelect";
 
+import { BoxSize } from "./types";
 
 interface TableStructQueryBoxProps {
     tsq: TableStructQuery;
@@ -12,8 +13,8 @@ function TableStructQueryBox({
     tsq,
     onSetSize,
 }: TableStructQueryBoxProps) {
-    function handleOnSetSize(w: number, h: number) {
-        onSetSize(w, h);
+    function handleOnSetSize(newSize: BoxSize) {
+        onSetSize(newSize.width, newSize.height);
     }
 
     return (
