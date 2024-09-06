@@ -42,13 +42,13 @@ export function ColumnElementsBox({
     // テーブルリスト
     const tableList: string[] = tableColumns.getTables();
     // テーブル名と、列名と、ColumnElementのy座標値の配列
-    let accumYVal = 0;
     const tableColumnYvalList: {tableName: string, columnName: string, y: number}[]
         = useMemo(
             ()=>tableList.map((t:string) => {
                 const cols: string[] = tableColumns.getColumnsByTable(t);
+                let accumYVal = 0;
                 return cols.map((c: string, i: number)=>{
-                    accumYVal += ((i > 0)? COLELM_ITEMS_PADDING: 0) + colElmsSize[i].height;
+                    accumYVal += (i > 0)? (COLELM_ITEMS_PADDING + colElmsSize[i-1].height): 0;
                     return {tableName: t, columnName: c, y: accumYVal};
                 });
             }).flat(),
@@ -87,7 +87,8 @@ export function ColumnElementsBox({
             />
             {tableColumnYvalList.map((tc, i)=>(
                 <g
-                    transform={`transform(0, ${tc.y})`}
+                    key={`ColumnElementsBox_${i}`}
+                    transform={`translate(0, ${tc.y})`}
                 >
                     <ColumnElementBox
                         tableName={tc.tableName}

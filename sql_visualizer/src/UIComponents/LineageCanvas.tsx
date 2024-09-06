@@ -57,6 +57,8 @@ function LineageCanvas({ astList }: LineageCanvasProps) {
         },
         [astList]
     );
+    console.log({astList});
+    console.log({tableStructs});
 
     function handleOnSetSize(w: number, h: number, i: number) {
         astWidths[i] = w;

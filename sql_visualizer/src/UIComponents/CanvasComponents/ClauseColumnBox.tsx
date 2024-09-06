@@ -17,21 +17,14 @@ export function ClauseColumnBox({
     clauseColumn,
     onSetSize,
 }: ClauseColumnBoxProps) {
-//    // この要素のサイズ
-//    const [curSize, setCurSize] = useState<BoxSize>({width: 0, height: 0});
-//    //const [curWidth, setCurWidth] = useState<number>(COLUMN_WIDTH);
-//    //const [curHeight, setCurHeight] = useState<number>(COLUMN_NAME_HEIGHT);
-
     // ElementsBoxのサイズ（Element"s"は１つしかない）
-//    //const [columnElementsWidth, setColumnElementsWidth] = useState<number>(0);
-//    //const [columnElementsHeight, setColumnElementsHeight] = useState<number>(0);
     const [columnElementsSize, setColumnElementsSize] = useState<BoxSize>({width: 0, height: 0});
 
     // この要素のサイズ
     const curSize = useMemo(
         () => {
             const newCurWidth: number = columnElementsSize.width;
-            const newCurHeight: number = COLUMN_NAME_HEIGHT + columnElementsSize.width;
+            const newCurHeight: number = COLUMN_NAME_HEIGHT + columnElementsSize.height;
 
             return {
                 width: newCurWidth,
@@ -41,19 +34,8 @@ export function ClauseColumnBox({
         [columnElementsSize]
     )
 
-//    useEffect(() => {
-//        const newWidth: number = Math.max(COLUMN_WIDTH, curWidth)
-//        const newHeight: number = COLUMN_NAME_HEIGHT + columnElementsHeight;
-//    
-//        setCurWidth(newWidth);
-//        setCurHeight(newHeight);
-//        onSetSize(curWidth, newHeight);
-//    }, [clauseColumn, columnElementsWidth, columnElementsHeight])
-
     function handleOnSetSize(newSize: BoxSize) {
         setColumnElementsSize(newSize);
-//        setColumnElementsWidth(w);
-//        setColumnElementsHeight(h);
     }
 
     // 自分のサイズを通知
@@ -82,7 +64,7 @@ export function ClauseColumnBox({
 
             {(tc.columnCount>1) && (
                 <g
-                    transform={`translate(0, ${curSize.height})`}
+                    transform={`translate(0, ${COLUMN_NAME_HEIGHT})`}
                 >
                     <ColumnElementsBox
                         tableColumns={tc}

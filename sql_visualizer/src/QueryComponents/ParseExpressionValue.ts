@@ -1,4 +1,4 @@
-import { ExpressionValue, ExprList, ColumnRef, Function, Case, AggrFunc, Cast } from "node-sql-parser";
+import { ExpressionValue, ExprList, ColumnRef, Function, Case, AggrFunc, Cast, Expr } from "node-sql-parser";
 
 import { ParseExpr } from "./ParseExpr";
 import { TableAndColumn, TableColumns } from "./TableColumns";
@@ -7,7 +7,7 @@ import { TableAndColumn, TableColumns } from "./TableColumns";
 export class ParseExpressionValue {
     private _exprVal: ExpressionValue;
     private _exprValType: 'ColumnRef' | 'Param' | 'Function'
-        | 'Case' | 'AggrFunc' | 'Cast' | 'Interval' | 'Value';
+        | 'Case' | 'AggrFunc' | 'Cast' | 'Interval' | 'Value' | 'Binary_expr';
     private _tcs: TableColumns;
 
     constructor(exprVal: ExpressionValue) {
@@ -25,6 +25,8 @@ export class ParseExpressionValue {
             this._exprValType = 'Cast';
         } else if (exprVal.type === 'interval') {
             this._exprValType = 'Interval';
+        } else if (exprVal.type === 'binary_expr') {
+            this._exprValType = 'Binary_expr';
         } else {
             // それ以外はすべてvalue
             // 'string'、'number'、'bool'など（ValueExpr）
@@ -109,6 +111,15 @@ export class ParseExpressionValue {
 
         // -- Interval
         //// なし
+
+        // -- Binary_expr
+        else if (this._exprValType === 'Binary_expr') {
+            // ExprValが入るべき場所に、Exprが入っているケース
+            const originExpr: Expr = this._exprVal as unknown as Expr;
+            const parsedExpr: ParseExpr = new ParseExpr(originExpr);
+            const tc: TableColumns = parsedExpr.getTableColumns();
+            this._tcs.mergeTableColumns(tc);
+        }
     }
 
     public getTableColumns(): TableColumns {

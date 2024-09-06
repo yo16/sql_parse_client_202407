@@ -33,6 +33,6 @@ export const COLUMN_NAME_HEIGHT = 30;
 export const COLELM_ITEMS_PADDING = 2;
 
 // columnElementの高さ
-export const COLELM_HEIGHT = 10;
+export const COLELM_HEIGHT = 18;
 // columnElementのインデント
-export const COLELM_INDENT_WIDTH = 20;
+export const COLELM_INDENT_WIDTH = 10;
