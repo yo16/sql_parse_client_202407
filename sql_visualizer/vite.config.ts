@@ -7,8 +7,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@': path.join(__dirname, 'src'),
-      '@QueryComponents': path.resolve(__dirname, 'src/QueryComponents')
+      '@': path.join(__dirname, './src')
     }
   }
 })

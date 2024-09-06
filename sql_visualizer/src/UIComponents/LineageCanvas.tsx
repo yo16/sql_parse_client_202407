@@ -3,9 +3,9 @@ import { AST } from "node-sql-parser";
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 
 
-import { TableStruct } from "@QueryComponents/TableStruct";
-import { TableStructQuery } from "@QueryComponents/TableStructQuery";
-import { getTableStructQueryObj } from "@/QueryComponents/getTableStructQueryObj";
+import { TableStruct } from "../QueryComponents/TableStruct";
+import { TableStructQuery } from "../QueryComponents/TableStructQuery";
+import { getTableStructQueryObj } from "../QueryComponents/getTableStructQueryObj";
 import { TableStructQueryBox } from "./CanvasComponents/TableStructQueryBox";
 import { AST_PADDING } from "./CanvasComponents/constCanvasComponents";
 

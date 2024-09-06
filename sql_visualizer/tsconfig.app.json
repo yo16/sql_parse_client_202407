@@ -9,8 +9,7 @@
     "skipLibCheck": true,
     "baseUrl": "./",
     "paths": {
-      "@/*": ["src/*"],
-      "@QueryComponents/*": ["src/QueryComponents/*"]
+      "@/*": ["src/*"]
     },
 
     /* Bundler mode */
@@ -28,7 +27,11 @@
     "noUnusedLocals": false,
     /*"noUnusedParameters": true,*/
     "noUnusedParameters": false,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    /* testing */
+    "esModuleInterop": true,
+    "types": ["@testing-library/jest-dom"]
   },
-  "include": ["src"]
+  "include": ["src", "__tests__"]
 }

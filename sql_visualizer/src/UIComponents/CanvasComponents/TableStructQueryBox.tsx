@@ -1,5 +1,5 @@
 // TableStructQueryに対応するcanvas要素
-import { TableStructQuery } from "@QueryComponents/TableStructQuery";
+import { TableStructQuery } from "../../QueryComponents/TableStructQuery";
 import { TableStructQuerySelectBox } from "./TableStructQuerySelectBox";
 import { QuerySelect } from "@/QueryComponents/QuerySelect";
 
