@@ -16,6 +16,8 @@ export const INCLAUSE_ITEMS_PADDING = 10;
 
 // with句１つの幅
 export const WITH_WIDTH = 100;
+// with名の高さ
+export const WITH_NAME_HEIGHT = 24;
 
 // from句１つの幅
 export const FROM_WIDTH = 150;

@@ -4,6 +4,8 @@ import { useState, useMemo, useEffect } from "react";
 import { WithInfo } from "./withClauseTools/WithInfo";
 import { TableStructQuerySelectBox } from "./TableStructQuerySelectBox";
 import { BoxSize } from "./types";
+import { WITH_NAME_HEIGHT } from "./constCanvasComponents";
+import { getTextPosByHeight } from "./commonFunctions";
 
 interface ClauseWithBoxProps {
     withInfo: WithInfo;
@@ -59,6 +61,12 @@ export function ClauseWithBox({
                 select={withInfo.selectObj}
                 onSetSize={handleOnSetSize}
             />
+            <text
+                {...(getTextPosByHeight(WITH_NAME_HEIGHT))}
+                fill={"#000"}
+            >
+                {withInfo.name}
+            </text>
         </g>
     );
 }
