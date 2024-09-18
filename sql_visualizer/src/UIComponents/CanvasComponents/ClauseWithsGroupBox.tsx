@@ -104,7 +104,7 @@ export function ClauseWithsGroupBox({
                                 onSetSize={(newSize) => handleOnSetSize(newSize, w_i)}
                             />
                         </g>
-                    )
+                    );
                 }
             )}
         </g>
