@@ -31,6 +31,10 @@ export class ClauseWith {
             paramWith.name.value
         );
     }
+
+    get name() {
+        return this._with.name.value;
+    }
     
     get select() {
         return this._select;

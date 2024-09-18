@@ -17,8 +17,13 @@ export class ClauseFroms {
     get froms(): ClauseFrom[] {
         return this._froms;
     }
-    get length() {
+
+    get length(): number {
         return this._froms.length;
+    }
+
+    get fromNames(): (string | undefined)[] {
+        return this._froms.map((f)=>f.tableName);
     }
 }
 

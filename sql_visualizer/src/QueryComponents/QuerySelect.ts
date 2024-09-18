@@ -36,4 +36,12 @@ export class QuerySelect extends TableStructQuery {
     public get columns(): ClauseColumns {
         return this._columns;
     }
+
+    public get fromNames(): (string | undefined)[] {
+        return this._fromsClause.fromNames;
+    }
+
+    public get columnNames(): string[] {
+        return this._columns.columnNames;
+    }
 }

@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
 
 import { QuerySelect } from "@/QueryComponents/QuerySelect";
+import { ClauseWiths } from "@/QueryComponents/ClauseWiths";
+import { WithsManager } from "./withClauseTools/WithsManager";
 import { ClauseWithsBox } from "./ClauseWithsBox";
 import { ClauseFromsBox } from "./ClauseFromsBox";
 import { ClauseColumnsBox } from "./ClauseColumnsBox";
@@ -22,6 +24,9 @@ export function TableStructQuerySelectBox({
     const [withsSize, setWithsSize] = useState<BoxSize>({width: 0, height: 0});
     const [fromsSize, setFromsSize] = useState<BoxSize>({width: FROM_WIDTH, height: INITIAL_HEIGHT});
     const [columnsSize, setColumnsSize] = useState<BoxSize>({width: COLUMN_WIDTH, height: INITIAL_HEIGHT});
+
+    // WithsManager
+    const [withsManager] = useState<WithsManager>(initializeWithsManager(select.withs));
 
     // SelectBox全体のサイズ
     const curSize: BoxSize = useMemo(
@@ -88,17 +93,17 @@ export function TableStructQuerySelectBox({
             />
 
             {/* Withs */}
-            {/*
-            <g
-                transform={`translate(${QUERY_ITEMS_PADDING}, ${QUERY_ITEMS_PADDING})`}
-                name="WithsBoxGroup"
-            >
-                <ClauseWithsBox
-                    clauseWiths={select.withs}
-                    onSetSize={handleOnSetWithsSize}
-                />
-            </g>
-            */}
+            {(! withsManager.isEmpty()) && (
+                <g
+                    transform={`translate(${QUERY_ITEMS_PADDING}, ${QUERY_ITEMS_PADDING})`}
+                    name="WithsBoxGroup"
+                >
+                    <ClauseWithsBox
+                        withsManager={withsManager}
+                        onSetSize={handleOnSetWithsSize}
+                    />
+                </g>
+            )}
             
             {/* Froms */}
             {/*
@@ -122,4 +127,14 @@ export function TableStructQuerySelectBox({
             </g>
         </>
     );
+}
+
+// WithsManagerを初期化する
+function initializeWithsManager(withs: ClauseWiths): WithsManager {
+    const wm: WithsManager = new WithsManager();
+
+    // WithsManagerへClauseWithsを登録する
+    wm.addWiths(withs);
+
+    return wm;
 }

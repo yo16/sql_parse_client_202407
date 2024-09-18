@@ -20,6 +20,10 @@ export class ClauseColumns {
     get columnCount(): number {
         return this._columns.length;
     }
+
+    get columnNames(): string[] {
+        return this._columnObjs.map((c) => c.columnName);
+    }
 }
 
 
