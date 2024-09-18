@@ -46,7 +46,7 @@ export function ClauseColumnBox({
         const curHeight: number
             = COLUMN_NAME_HEIGHT
             + columnElementsSize.height
-            + COLELMS_PADDING*2;    // 上下
+            + ((columnElementsSize.height>0)? COLELMS_PADDING*2: 0);    // elementsを表示する場合は上下のpadding
         return curHeight;
     }
 
@@ -61,8 +61,30 @@ export function ClauseColumnBox({
         setColumnElementsSize(newSize);
     }
 
-    
-    const tc: TableColumns = clauseColumn.tableCols;
+    // ColumnElementsBoxを描画するかどうかの判定
+    const drawElementsBox: boolean = useMemo(
+        () => {
+            const tc: TableColumns = clauseColumn.tableCols;
+            
+            // 参照している列が２つ以上の場合は、表示
+            if (tc.columnCount > 1) return true;
+
+            // 参照している列がゼロの場合は、非表示
+            if (tc.columnCount == 0) return false;
+
+            // 以下は、参照している列が１つの場合
+            
+            const targetTable: string = tc.getTables()[0];
+            const targetColumn: string = tc.getColumnsByTable(targetTable)[0];
+            
+            // 列名が一致している場合は、非表示（表示は不要）
+            if (targetColumn === clauseColumn.columnName) return false;
+            
+            return true;
+        },
+        [clauseColumn]
+    );
+
     return (
         <>
             <rect
@@ -78,12 +100,12 @@ export function ClauseColumnBox({
                 {clauseColumn.columnName}
             </text>
 
-            {(tc.columnCount>=1) && (   // 2項目以上、または、1項目の場合はrenamedだったら、描画
+            {drawElementsBox && (
                 <g
                     transform={`translate(${COLELMS_PADDING+COLELM_INDENT_WIDTH}, ${COLELMS_PADDING+COLUMN_NAME_HEIGHT})`}
                 >
                     <ColumnElementsBox
-                        tableColumns={tc}
+                        tableColumns={clauseColumn.tableCols}
                         onSetSize={handleOnSetSize}
                     />
                 </g>

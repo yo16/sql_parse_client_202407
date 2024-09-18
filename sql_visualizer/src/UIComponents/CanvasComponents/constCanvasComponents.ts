@@ -32,11 +32,11 @@ export const COLUMN_WIDTH = 100;
 export const COLUMN_NAME_HEIGHT = 30;
 
 // columnElementsBoxとcolumnElementの隙間
-export const COLELMS_PADDING = 5;
+export const COLELMS_PADDING = 4;
 // columnElement要素間の隙間
 export const COLELM_ITEMS_PADDING = 2;
 
 // columnElementの高さ
-export const COLELM_HEIGHT = 18;
+export const COLELM_HEIGHT = 20;
 // columnElementのインデント
-export const COLELM_INDENT_WIDTH = 10;
+export const COLELM_INDENT_WIDTH = 20;

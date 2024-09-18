@@ -44,7 +44,7 @@ export function ColumnElementBox({
             />
             <text
                 {...getTextPosByHeight(COLELM_HEIGHT)}
-                fill={"#f60"}
+                fill={"#a60"}
             >
                 {createTableColumnName(tableName, columnName)}
             </text>
