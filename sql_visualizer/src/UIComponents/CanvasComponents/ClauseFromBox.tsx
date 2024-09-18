@@ -1,45 +1,80 @@
-import { useState, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 
-import { ClauseFrom } from "@/QueryComponents/ClauseFroms";
 import { TableStructQuery } from "@/QueryComponents/TableStructQuery";
-import { TableStructQueryBox } from "./TableStructQueryBox";
+import { ClauseFrom } from "@/QueryComponents/ClauseFroms";
+import { BoxSize } from "./types";
 
-import { FROM_WIDTH, FORM_NAME_HEIGHT } from "./constCanvasComponents";
+import { FROM_WIDTH, FORM_NAME_HEIGHT, INCLAUSE_ITEMS_PADDING } from "./constCanvasComponents";
 import { getTextPosByHeight } from "./commonFunctions";
+import { TableStructQueryBox } from "./TableStructQueryBox";
 
 interface ClauseFromBoxProps {
     clauseFrom: ClauseFrom;
-    onSetSize: (w: number, h: number) => void;
+    onSetSize: (newSize: BoxSize) => void;
 }
 export function ClauseFromBox({
     clauseFrom,
     onSetSize,
 }: ClauseFromBoxProps) {
-    // TableStructQueryのサイズ
-    const [tsqWidth, setTsqWidth] = useState<number>(FROM_WIDTH);
-    const [tsqHeight, setTsqHeight] = useState<number>(0);
+    const [tsqSize, setTsqSize] = useState<BoxSize>({
+        width: 0,
+        height: 0,
+    });
 
-    useEffect(()=>{
-        onSetSize(
-            Math.max(tsqWidth, FROM_WIDTH),
-            FORM_NAME_HEIGHT + tsqHeight
-        );
-    }, [clauseFrom, tsqWidth, tsqHeight]);
+    // FromBox全体のサイズ
+    const curSize: BoxSize = useMemo(
+        () => {
+            // 全体の幅と高さを計算
+            const curWidth: number = getCurWidth();
+            const curHeight: number = getCurHeight();
 
-    function handleOnSetTableStructQuerySize(w: number, h: number) {
-        setTsqWidth(w);
-        setTsqHeight(h);
+            return {
+                width: curWidth,
+                height: curHeight,
+            };
+        },
+        [tsqSize]
+    );
+
+    // 現在のサイズを取得
+    function getCurWidth(): number {
+        const curWidth: number
+            = tsqSize.width + INCLAUSE_ITEMS_PADDING*2;
+
+        return Math.max(curWidth, FROM_WIDTH);
+    }
+    function getCurHeight(): number {
+        const curHeight: number
+            = FORM_NAME_HEIGHT
+            + tsqSize.height
+            + ((tsqSize.height>0)? (INCLAUSE_ITEMS_PADDING*2): 0);
+
+        return curHeight;
     }
 
+    // tsqSizeが変わったときは、呼び出し元へ通知
+    useEffect(
+        () => onSetSize(curSize),
+        [tsqSize]
+    );
+
+    // width, heightが変わったときのハンドラ
+    function handleOnSetSize(newWidth: number, newHeight: number) {
+        setTsqSize({
+            width: newWidth,
+            height: newHeight,
+        });
+    }
+
+
     return (
-        <>
-            {/* table name */}
+        <g>
             <rect
                 x={0}
                 y={0}
-                width={Math.max(tsqWidth, FROM_WIDTH)}
-                height={FORM_NAME_HEIGHT}
-                fill={"#333"}
+                width={curSize.width}
+                height={curSize.height}
+                fill={"#fdb"}
             />
             <text
                 {...(getTextPosByHeight(FORM_NAME_HEIGHT))}
@@ -47,18 +82,20 @@ export function ClauseFromBox({
             >
                 {(clauseFrom.db)?`${clauseFrom.db}.`:''}{clauseFrom.tableName}
             </text>
-
-            {(clauseFrom.tableStruct instanceof TableStructQuery)&&
-                <g
-                    transform={`translate(${0}, ${FORM_NAME_HEIGHT})`}
-                    name={`FromBox-Query`}
-                >
-                    <TableStructQueryBox
-                        tsq={clauseFrom.tableStruct}
-                        onSetSize={handleOnSetTableStructQuerySize}
-                    />
-                </g>
-            }
-        </>
+            {(clauseFrom.tableStruct instanceof TableStructQuery) && ((() => {
+                const xPos: number = INCLAUSE_ITEMS_PADDING;
+                const yPos: number = INCLAUSE_ITEMS_PADDING;
+                return (
+                    <g
+                        transform={`translate(${xPos}, ${yPos})`}
+                    >
+                        <TableStructQueryBox
+                            tsq={clauseFrom.tableStruct}
+                            onSetSize={handleOnSetSize}
+                        />
+                    </g>
+                );
+            })())}
+        </g>
     );
 }

@@ -18,7 +18,7 @@ export class ClauseFroms {
         return this._froms;
     }
 
-    get length(): number {
+    get fromCount(): number {
         return this._froms.length;
     }
 

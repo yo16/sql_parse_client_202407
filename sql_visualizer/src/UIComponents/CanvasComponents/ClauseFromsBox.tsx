@@ -1,92 +1,86 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect } from "react";
 
 import { ClauseFroms } from "@/QueryComponents/ClauseFroms";
 import { ClauseFromBox } from "./ClauseFromBox";
 
-import {
-    CLAUSE_HEADER_HEIGHT, INITIAL_HEIGHT, INCLAUSE_ITEMS_PADDING, FROM_WIDTH, FORM_NAME_HEIGHT
-} from "./constCanvasComponents";
-import { arraysEqual, getTextPosByHeight } from "./commonFunctions";
+import { BoxSize } from "./types";
+
+import { FROM_WIDTH, INCLAUSE_ITEMS_PADDING, CLAUSE_HEADER_HEIGHT } from "./constCanvasComponents";
+import { getTextPosByHeight } from "./commonFunctions";
 
 interface ClauseFromsBoxProps {
     clauseFroms: ClauseFroms;
-    onSetSize: (w: number, h: number) => void;
+    onSetSize: (newSize: BoxSize) => void;
 }
 export function ClauseFromsBox({
     clauseFroms,
     onSetSize,
 }: ClauseFromsBoxProps) {
-    // FromsBox全体のサイズ
-    const [curWidth, setCurWidth] = useState<number>(FROM_WIDTH + INCLAUSE_ITEMS_PADDING*2);
-    const [curHeight, setCurHeight] = useState<number>(CLAUSE_HEADER_HEIGHT + INCLAUSE_ITEMS_PADDING*2);
-
     // from要素群(ClauseFromBox)の各々のサイズ
-    const [fromWidths, setFromWidths] = useState<number[]>([]);
-    const [fromHeights, setFromHeights] = useState<number[]>([]);
+    const [fromSizes, setFromSizes] = useState<BoxSize[]>(
+        () => initializeFromSizes(clauseFroms.fromCount)
+    );
 
-    // 最終的に描画したfrom句
-    const curClauseFroms = useRef<ClauseFroms | null>(null);
+    // FromsBox全体のサイズ
+    const curSize: BoxSize = useMemo(
+        () => {
+            const curWidth = getCurWidth();
+            const curHeight = getCurHeight();
 
-    useEffect(()=>{
-        // 全体のサイズを計算してonSetSizeを呼ぶ
-        // widthはfromWidthの最大値
-        const wholeWidth: number = (
-            (fromWidths.length > 0)? Math.max(...fromWidths): FROM_WIDTH
-        ) + INCLAUSE_ITEMS_PADDING * 2;
-        // heightはすべてのfromの合計＋隙間
-        const wholeHeight: number = fromHeights.reduce((acc, h, i) => {
-            return acc + ((i>0)? INCLAUSE_ITEMS_PADDING: 0) + h;
-        }, CLAUSE_HEADER_HEIGHT + INCLAUSE_ITEMS_PADDING*2);  // "from"のヘッダーと上下
+            return {
+                width: curWidth,
+                height: curHeight,
+            };
+        },
+        [fromSizes]
+    );
 
-        setCurWidth(wholeWidth);
-        setCurHeight(wholeHeight);
-        onSetSize(wholeWidth, wholeHeight);
-    }, [clauseFroms, fromWidths, fromHeights]);
-
-    function handleOnSetSize(w: number, h: number, i: number) {
-        // ローカルのuseState値を更新
-        fromWidths[i] = w;
-        setFromWidths([...fromWidths]);
-
-        // ローカルのuseState値を更新
-        fromHeights[i] = h;
-        setFromHeights([...fromHeights]);
+    // 自分のサイズを計算
+    function getCurWidth(): number {
+        const curWidth: number
+            = fromSizes.reduce(
+                (accWidth, curSize) => ((accWidth < curSize.width)? curSize.width: accWidth),
+                FROM_WIDTH
+            ) + INCLAUSE_ITEMS_PADDING*2;   // 左右
+        return curWidth;
+    }
+    function getCurHeight(): number {
+        const curHeight: number
+            = fromSizes.reduce(
+                (accHeight, curSize) => {
+                    return accHeight + INCLAUSE_ITEMS_PADDING + curSize.height;
+                },
+                CLAUSE_HEADER_HEIGHT + INCLAUSE_ITEMS_PADDING // "from"のヘッダーと下
+            );
+        return curHeight;
     }
 
-    // 初期化
-    function initializeValues(newFrom: ClauseFroms) {
-        // fromWidths, fromHeihtsを初期化
-        const initialFromWidth: number[] = newFrom.froms.map((_) => FROM_WIDTH);
-        if (!arraysEqual(fromWidths, initialFromWidth)) {
-            setFromWidths(initialFromWidth);
-        }
-        const initialFromHeight: number[] = newFrom.froms.map((_) => INITIAL_HEIGHT);
-        if (!arraysEqual(fromHeights, initialFromHeight)) {
-            setFromWidths(initialFromHeight);
-        }
-    }
+    // withsGroupSizeが変わった場合は、呼び出し元へ通知
+    useEffect(
+        () => onSetSize(curSize),
+        [fromSizes]
+    );
 
-    // from句が変わった場合に、初期化
-    // ただし描画の前で実行する必要があるため、タイミングの遅いフックは使えない
-    if (curClauseFroms.current !== clauseFroms) {   // インスタンスの比較
-        initializeValues(clauseFroms);
-        curClauseFroms.current = clauseFroms;
+    // サイズが変わったときのハンドラ
+    function handleOnSetSize(newSize: BoxSize, i: number) {
+        setFromSizes(
+            (fromSizes) => fromSizes.map((fs, j) => ((i===j)? newSize: fs))
+        );
     }
 
     return (
-        <>
+        <g>
             <rect
                 x={0}
                 y={0}
-                width={curWidth}
-                height={curHeight}
-                fill={"#0f0"}
+                width={curSize.width}
+                height={curSize.height}
+                fill={"#ff0"}
             />
-            
             <rect
                 x={0}
                 y={0}
-                width={curWidth}
+                width={curSize.width}
                 height={CLAUSE_HEADER_HEIGHT}
                 fill={"#fff"}
             />
@@ -97,28 +91,32 @@ export function ClauseFromsBox({
             >
                 from
             </text>
-
-            {clauseFroms.froms.map((f, i)=>{
-                // iより上のfrom句の累計 + INCLAUSE_ITEMS_PADDING
-                let yPos: number = CLAUSE_HEADER_HEIGHT;
-                for(let j=0; j<i; j++) {
-                    yPos += INCLAUSE_ITEMS_PADDING;
-                    yPos += fromHeights[j];
+            {clauseFroms.froms.map((f, from_i) => {
+                // x位置
+                const xPos: number = INCLAUSE_ITEMS_PADDING;
+                // y位置
+                let yPos: number = CLAUSE_HEADER_HEIGHT + INCLAUSE_ITEMS_PADDING;
+                for (let i=0; i<from_i; i++) {
+                    yPos += fromSizes[i].height + INCLAUSE_ITEMS_PADDING;
                 }
-                yPos += INCLAUSE_ITEMS_PADDING;
+
                 return (
                     <g
-                        key={`G_FromBox_${i}`}
-                        transform={`translate(${INCLAUSE_ITEMS_PADDING}, ${yPos})`}
-                        name={`FromBox-${i}`}
+                        key={`G_from_${from_i}`}
+                        transform={`translate(${xPos}, ${yPos})`}
+                        name={`Froms-${from_i}`}
                     >
                         <ClauseFromBox
                             clauseFrom={f}
-                            onSetSize={(w, h)=>handleOnSetSize(w, h, i)}
+                            onSetSize={(newSize) => handleOnSetSize(newSize, from_i)}
                         />
                     </g>
-                )
+                );
             })}
-        </>
+        </g>
     );
+}
+
+function initializeFromSizes(fromCount: number): BoxSize[] {
+    return new Array(fromCount).fill({width: 0, height: 0});
 }
