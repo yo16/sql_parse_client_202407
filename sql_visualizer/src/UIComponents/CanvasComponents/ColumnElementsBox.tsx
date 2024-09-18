@@ -16,7 +16,7 @@ export function ColumnElementsBox({
     onSetSize,
 }: ColumnElementsBoxProps) {
     // ColumnElement要素たちのサイズ
-    const [colElmsSize, setColElmnsSize]
+    const [colElmSizes, setColElmSizes]
         = useState<BoxSize[]>(
             () => new Array(tableColumns.columnCount).fill({width:0, height:0})
         );
@@ -31,12 +31,27 @@ export function ColumnElementsBox({
                 height: newCurHeight
             };
         },
-        [colElmsSize]
+        [colElmSizes]
     );
-    
-    // i番目のサイズ変更時のハンドル
-    function handleOnSetSize(newBoxSize: BoxSize, i: number) {
-        setColElmnsSize((elmsSize) => elmsSize.map((sz: BoxSize, j: number) => (i===j ? newBoxSize: sz)));
+
+    // 自分のサイズを計算
+    function getCurWidth() {
+        // elementの最大に、左右のパディングを追加
+        const curWidth: number
+            = colElmSizes.reduce(
+                (acc, curSize) => ((acc < curSize.width)? curSize.width: acc),
+                0
+            ) + COLELM_ITEMS_PADDING*2;   // 左右
+        return curWidth;
+    }
+    function getCurHeight() {
+        // elementの合計＋それぞれのパディングに、下のパディングを追加
+        const curHeight: number
+            = colElmSizes.reduce(
+                (acc, curSize) => acc + COLELM_ITEMS_PADDING + curSize.height,
+                0
+            ) + COLELM_ITEMS_PADDING;
+        return curHeight;
     }
 
     // テーブルリスト
@@ -48,32 +63,23 @@ export function ColumnElementsBox({
                 const cols: string[] = tableColumns.getColumnsByTable(t);
                 let accumYVal = 0;
                 return cols.map((c: string, i: number)=>{
-                    accumYVal += (i > 0)? (COLELM_ITEMS_PADDING + colElmsSize[i-1].height): 0;
+                    accumYVal += (i > 0)? (COLELM_ITEMS_PADDING + colElmSizes[i-1].height): 0;
                     return {tableName: t, columnName: c, y: accumYVal};
                 });
             }).flat(),
-            [colElmsSize]
+            [colElmSizes]
         );
-
-    // 自分のサイズを計算
-    function getCurWidth() {
-        return colElmsSize.reduce(
-            (acc, curSize) => ((acc < curSize.width)? curSize.width: acc),
-            0
-        );
-    }
-    function getCurHeight() {
-        return colElmsSize.reduce(
-            (acc, curSize, i) => acc + ((i > 0)? COLELM_ITEMS_PADDING: 0) + curSize.height,
-            0
-        );
-    }
 
     // この要素のサイズを通知
     useEffect(
         () => onSetSize(curSize),
-        [colElmsSize]
+        [colElmSizes]
     );
+    
+    // i番目のサイズ変更時のハンドル
+    function handleOnSetSize(newBoxSize: BoxSize, i: number) {
+        setColElmSizes((elmsSize) => elmsSize.map((sz: BoxSize, j: number) => ((i===j)? newBoxSize: sz)));
+    }
 
 
     return (
@@ -85,18 +91,26 @@ export function ColumnElementsBox({
                 height={curSize.height}
                 fill="#f00"
             />
-            {tableColumnYvalList.map((tc, i)=>(
-                <g
-                    key={`ColumnElementsBox_${i}`}
-                    transform={`translate(0, ${tc.y})`}
-                >
-                    <ColumnElementBox
-                        tableName={tc.tableName}
-                        columnName={tc.columnName}
-                        onSetSize={(sz: BoxSize) => handleOnSetSize(sz, i)}
-                    />
-                </g>
-            ))}
+            {tableColumnYvalList.map((tc, tc_i)=>{
+                const xPos: number = COLELM_ITEMS_PADDING;
+                let yPos: number = COLELM_ITEMS_PADDING;
+                for (let i=0; i<tc_i; i++) {
+                    yPos += COLELM_ITEMS_PADDING + colElmSizes[i].height;
+                }
+
+                return (
+                    <g
+                        key={`ColumnElementsBox_${tc_i}`}
+                        transform={`translate(${xPos}, ${yPos})`}
+                    >
+                        <ColumnElementBox
+                            tableName={tc.tableName}
+                            columnName={tc.columnName}
+                            onSetSize={(sz: BoxSize) => handleOnSetSize(sz, tc_i)}
+                        />
+                    </g>
+                );
+            })}
         </>
     );
 }

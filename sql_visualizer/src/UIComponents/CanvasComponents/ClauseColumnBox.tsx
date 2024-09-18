@@ -5,7 +5,7 @@ import { TableColumns } from "@/QueryComponents/TableColumns";
 import { ColumnElementsBox } from "./ColumnElementsBox";
 
 import type { BoxSize } from "./types";
-import { COLUMN_NAME_HEIGHT } from "./constCanvasComponents";
+import { COLUMN_NAME_HEIGHT, COLUMN_WIDTH, COLELM_INDENT_WIDTH, COLELMS_PADDING } from "./constCanvasComponents";
 import { getTextPosByHeight } from "./commonFunctions";
 
 
@@ -20,11 +20,11 @@ export function ClauseColumnBox({
     // ElementsBoxのサイズ（Element"s"は１つしかない）
     const [columnElementsSize, setColumnElementsSize] = useState<BoxSize>({width: 0, height: 0});
 
-    // この要素のサイズ
+    // ColumnBox全体のサイズ
     const curSize = useMemo(
         () => {
-            const newCurWidth: number = columnElementsSize.width;
-            const newCurHeight: number = COLUMN_NAME_HEIGHT + columnElementsSize.height;
+            const newCurWidth: number = getCurWidth();
+            const newCurHeight: number = getCurHeight();
 
             return {
                 width: newCurWidth,
@@ -34,19 +34,35 @@ export function ClauseColumnBox({
         [columnElementsSize]
     )
 
-    function handleOnSetSize(newSize: BoxSize) {
-        setColumnElementsSize(newSize);
+    // 現在のサイズを取得
+    function getCurWidth(): number {
+        // columnElementsは、インデントも含めた幅と比較する
+        const curWidth: number
+            = Math.max((COLELM_INDENT_WIDTH+columnElementsSize.width), COLUMN_WIDTH)
+            + COLELMS_PADDING*2;    // 左右
+        return curWidth;
+    }
+    function getCurHeight(): number {
+        const curHeight: number
+            = COLUMN_NAME_HEIGHT
+            + columnElementsSize.height
+            + COLELMS_PADDING*2;    // 上下
+        return curHeight;
     }
 
-    // 自分のサイズを通知
+    // columnElementsSizeが変わった場合は、呼び出し元へ通知
     useEffect(
         () => onSetSize(curSize),
         [columnElementsSize]
     );
 
+    // width, heightが変わったときのハンドラ
+    function handleOnSetSize(newSize: BoxSize) {
+        setColumnElementsSize(newSize);
+    }
+
     
     const tc: TableColumns = clauseColumn.tableCols;
-    const columnName: string = clauseColumn.columnName;
     return (
         <>
             <rect
@@ -59,12 +75,12 @@ export function ClauseColumnBox({
             <text
                 {...(getTextPosByHeight(COLUMN_NAME_HEIGHT))}
             >
-                {columnName}
+                {clauseColumn.columnName}
             </text>
 
-            {(tc.columnCount>1) && (
+            {(tc.columnCount>=1) && (   // 2項目以上、または、1項目の場合はrenamedだったら、描画
                 <g
-                    transform={`translate(0, ${COLUMN_NAME_HEIGHT})`}
+                    transform={`translate(${COLELMS_PADDING+COLELM_INDENT_WIDTH}, ${COLELMS_PADDING+COLUMN_NAME_HEIGHT})`}
                 >
                     <ColumnElementsBox
                         tableColumns={tc}

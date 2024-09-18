@@ -31,6 +31,8 @@ export const COLUMN_WIDTH = 100;
 // columnの列名を書く部分の高さ
 export const COLUMN_NAME_HEIGHT = 30;
 
+// columnElementsBoxとcolumnElementの隙間
+export const COLELMS_PADDING = 5;
 // columnElement要素間の隙間
 export const COLELM_ITEMS_PADDING = 2;
 
