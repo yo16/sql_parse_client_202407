@@ -13,7 +13,6 @@
 //        - withの名前リストを取得
 //        - WithsGroupManagerリストの要素数を取得
 //        - with句の有無
-//        - toBox
 
 import { ClauseWiths, ClauseWith } from "@/QueryComponents/ClauseWiths";
 import { WithsGroupManager } from "./WithsGroupManager";
@@ -84,10 +83,5 @@ export class WithsManager {
     // with句の有無
     public isEmpty(): boolean {
         return (this._withsGroupList.length === 0);
-    }
-
-    // toBox
-    public toBox: React.FC<{}> = () => {
-        return (<></>);
     }
 }

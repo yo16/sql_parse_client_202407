@@ -49,7 +49,6 @@
         - withの名前リストを取得
         - WithsGroupManagerリストを取得
         - with句の有無
-        - toBox
 2. WithsGroupManager
     - 概要
         - 階層ごとの管理オブジェクト
@@ -59,7 +58,6 @@
         - WithInfoを１つ追加
         - withの名前リストを取得
         - withの名前に、引数の名前があるかどうかを確認
-        - toBox
 3. WithInfo
     - 概要
         - withごとの管理オブジェクト
@@ -72,5 +70,4 @@
         - withの名前を取得
         - パース（private）
         - 参照する親テーブル名リストを取得
-        - toBox
 

@@ -10,7 +10,6 @@
 //        - withの名前を取得
 //        - パース（private）
 //        - 参照する親テーブル名リストを取得
-//        - toBox
 
 import { ClauseWith } from "@/QueryComponents/ClauseWiths";
 import { QuerySelect } from "@/QueryComponents/QuerySelect";
@@ -58,10 +57,5 @@ export class WithInfo {
         // 参照しているテーブルを取得する（undefined以外）
         this._parentTables = this._with.select.fromNames
             .filter((nm): nm is string => nm !== undefined);
-    }
-
-    // toBox
-    public toBox: React.FC<{}> = () => {
-        return (<></>);
     }
 }

@@ -7,7 +7,6 @@
 //        - WithInfoを１つ追加
 //        - withの名前リストを取得
 //        - withの名前に、引数の名前があるかどうかを確認
-//        - toBox
 
 import { WithInfo } from "./WithInfo";
 
@@ -36,10 +35,5 @@ export class WithsGroupManager {
     // withの名前に、引数の名前があるかどうかを確認
     public hasTable(tableName: string): boolean {
         return tableName in this.tableNames;
-    }
-
-    // toBox
-    public toBox: React.FC<{}> = () => {
-        return (<></>);
     }
 }
