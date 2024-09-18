@@ -10,10 +10,6 @@ import {
 import { arraysEqual, getTextPosByHeight } from "./commonFunctions";
 
 
-function initializeColumnsSize(colCount: number): BoxSize[] {
-    return new Array(colCount).fill({width: 0, height: 0});
-}
-
 interface ClauseColumnsBoxProps {
     clauseColumns: ClauseColumns;
     onSetSize: (newSize: BoxSize) => void;
@@ -112,4 +108,9 @@ export function ClauseColumnsBox({
 
         </>
     );
+}
+
+
+function initializeColumnsSize(colCount: number): BoxSize[] {
+    return new Array(colCount).fill({width: 0, height: 0});
 }
