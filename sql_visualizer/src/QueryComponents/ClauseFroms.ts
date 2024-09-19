@@ -73,7 +73,14 @@ export class ClauseFrom {
                 const expr: ParseExpr = new ParseExpr(joinFrom.on);
                 const tc: TableColumns = expr.getTableColumns();
                 // テーブル名はnullもありうるが、joinのどちらのものであるかの判定が難しいので、未実装★
-                const cols: string[] = tc.getColumnsByTable(joinFrom.table);
+                const tables: string[] = tc.getTables();
+                let cols: string[] = []
+                if (joinFrom.as && (tables.includes(joinFrom.as))) {
+                    // asがテーブル名として登録されている場合は、asで探す
+                    cols = tc.getColumnsByTable(joinFrom.as);
+                } else {
+                    cols = tc.getColumnsByTable(joinFrom.table);
+                }
                 // 列を追加
                 joinedTable.addColumns(cols);
 
