@@ -1,14 +1,19 @@
-import { useState, useMemo, useEffect } from "react";
+// ClauseFromBox
+// 
+// ElementsBoxのラッパー。
+// サイズ等の描画に関わる処理は、ElementsBoxで行う。
+// ここでは、From特有の情報から、
+// 汎用的なElementsBoxに渡す情報へ、変換する役割を担う。
+
+import { useMemo } from "react";
 
 import { TableStructQuery } from "@/QueryComponents/TableStructQuery";
 import { ClauseFrom } from "@/QueryComponents/ClauseFroms";
+import { TableStructQueryBox } from "./TableStructQueryBox";
+import { ElementsBox } from "./ElementsBox";
+
 import { BoxSize } from "./types";
 
-import { FROM_WIDTH, FORM_NAME_HEIGHT, INCLAUSE_ITEMS_PADDING } from "./constCanvasComponents";
-import { getTextPosByHeight } from "./commonFunctions";
-import { TableStructQueryBox } from "./TableStructQueryBox";
-
-import "./commonSvgStyles.css";
 
 interface ClauseFromBoxProps {
     clauseFrom: ClauseFrom;
@@ -18,88 +23,51 @@ export function ClauseFromBox({
     clauseFrom,
     onSetSize,
 }: ClauseFromBoxProps) {
-    const [tsqSize, setTsqSize] = useState<BoxSize>({
-        width: 0,
-        height: 0,
-    });
+    // 親の名前群と、子の名前
+    const [parentNames, childName]: [string[], string]
+        = useMemo(
+            () => {
+                // asがあったら子に設定
+                let childName: string = "";
+                if (clauseFrom.asTableName) {
+                    // asがある
+                    childName = clauseFrom.asTableName;
+                }
 
-    // FromBox全体のサイズ
-    const curSize: BoxSize = useMemo(
-        () => {
-            // 全体の幅と高さを計算
-            const curWidth: number = getCurWidth();
-            const curHeight: number = getCurHeight();
+                // fromの親は１個しかないけど
+                // select文の場合はundefになっている
+                const parentName: string
+                    = clauseFrom.originTableName? clauseFrom.originTableName: "";
 
-            return {
-                width: curWidth,
-                height: curHeight,
-            };
-        },
-        [tsqSize]
-    );
+                return [
+                    [parentName],
+                    childName
+                ];
+            },
+            [clauseFrom]
+        );
 
-    // 現在のサイズを取得
-    function getCurWidth(): number {
-        const curWidth: number
-            = tsqSize.width + INCLAUSE_ITEMS_PADDING*2;
-
-        return Math.max(curWidth, FROM_WIDTH);
+    // ハンドラは上へそのまま伝えるだけ
+    function handleOnSetSize(newSize: BoxSize) {
+        onSetSize(newSize);
     }
-    function getCurHeight(): number {
-        const curHeight: number
-            = FORM_NAME_HEIGHT
-            + tsqSize.height
-            + ((tsqSize.height>0)? (INCLAUSE_ITEMS_PADDING*2): 0);
-
-        return curHeight;
-    }
-
-    // tsqSizeが変わったときは、呼び出し元へ通知
-    useEffect(
-        () => onSetSize(curSize),
-        [tsqSize]
-    );
-
-    // width, heightが変わったときのハンドラ
-    function handleOnSetSize(newWidth: number, newHeight: number) {
-        setTsqSize({
-            width: newWidth,
-            height: newHeight,
-        });
-    }
-
+    // TableStructQueryBoxのonSetSizeは
+    // ElementsBoxの中で書き換えられるはずなので、
+    // ここではダミーで受け取っておく
+    function handleDummy(width: number, height: number) {}
 
     return (
-        <g
-            className="fromBox"
+        <ElementsBox
+            parentNames={parentNames}
+            childName={childName}
+            onSetSize={handleOnSetSize}
         >
-            <rect
-                x={0}
-                y={0}
-                width={curSize.width}
-                height={curSize.height}
-                className="bg"
-            />
-            <text
-                {...(getTextPosByHeight(FORM_NAME_HEIGHT))}
-                fill={"#f00"}
-            >
-                {(clauseFrom.db)?`${clauseFrom.db}.`:''}{clauseFrom.originTableName}{(clauseFrom.asTableName) && (` as ${clauseFrom.asTableName}`)}
-            </text>
-            {(clauseFrom.tableStruct instanceof TableStructQuery) && ((() => {
-                const xPos: number = INCLAUSE_ITEMS_PADDING;
-                const yPos: number = FORM_NAME_HEIGHT + INCLAUSE_ITEMS_PADDING;
-                return (
-                    <g
-                        transform={`translate(${xPos}, ${yPos})`}
-                    >
-                        <TableStructQueryBox
-                            tsq={clauseFrom.tableStruct}
-                            onSetSize={handleOnSetSize}
-                        />
-                    </g>
-                );
-            })())}
-        </g>
+            {(clauseFrom.tableStruct instanceof TableStructQuery) && (
+                <TableStructQueryBox
+                    tsq={clauseFrom.tableStruct}
+                    onSetSize={handleDummy}
+                />
+            )}
+        </ElementsBox>
     );
 }
