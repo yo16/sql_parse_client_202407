@@ -16,7 +16,7 @@ import React, { useState, ReactElement, useMemo, useEffect } from "react";
 import { ElementBox } from "./ElementBox";
 
 import { BoxSize } from "./types";
-import { INCLAUSE_ITEMS_PADDING, ELM_INDENT_WIDTH } from "./constCanvasComponents";
+import { INCLAUSE_ITEMS_PADDING, ELM_INDENT_WIDTH, ELM_ITEMS_PADDING } from "./constCanvasComponents";
 import { initializeBoxSizes } from "./commonFunctions";
 
 import "./commonSvgStyles.css";
@@ -67,16 +67,16 @@ export function ElementsBox({
     function getCurHeight(): number {
         // 親の高さ＝アイテムの上のpadding＋アイテムの高さ
         const accumulatedParentHeight: number = parentBoxSizes.reduce(
-            (acc, curSize) => acc + INCLAUSE_ITEMS_PADDING + curSize.height,
+            (acc, curSize, i) => acc + ((i > 0)? ELM_ITEMS_PADDING: 0) + curSize.height,
             0
         );
         // 子の高さと、親との隙間（隙間の幅は、子がない場合はゼロ）
         const childHeight: number = childBoxSize.height
-            + ((childBoxSize.height > 0)? INCLAUSE_ITEMS_PADDING: 0);
-        // 親＋子＋下の隙間
+            + ((childBoxSize.height > 0)? ELM_ITEMS_PADDING: 0);
+        // 親＋子＋上下の隙間
         return accumulatedParentHeight
             + childHeight
-            + INCLAUSE_ITEMS_PADDING;
+            + INCLAUSE_ITEMS_PADDING*2;
     }
 
     // parentBoxSizes, childBoxSizeが変わった場合は、再計算した自分のサイズを呼び出し元へ通知
@@ -86,6 +86,9 @@ export function ElementsBox({
     );
 
     // サイズが変わったときのハンドラ
+    function handleOnSetSizeParentsWH(width: number, height: number, i: number) {
+        handleOnSetSizeParents({width, height}, i);
+    }
     function handleOnSetSizeParents(newSize: BoxSize, i: number) {
         setParentBoxSizes(
             (sizes) => sizes.map((sz, j) => ((i===j)? newSize: sz))
@@ -128,7 +131,7 @@ export function ElementsBox({
                                     // parentがReactElementのときのみ、onSetSizeをつける
                                     // （ReactElementしかないはず）
                                     return React.cloneElement(p as ReactElement, {
-                                        onSetSize: (newSize: BoxSize) => handleOnSetSizeParents(newSize, i)
+                                        onSetSize: (w:number, h:number) => handleOnSetSizeParentsWH(w, h, i)
                                     });
                                 }
                                 return parent;
@@ -141,11 +144,10 @@ export function ElementsBox({
                 <>{/* Reactのchildrenが指定されていない場合は、parentNamesから親要素を作成する */}
                 {parentNames.map((parentName: string, parent_i) => {
                     const xPos: number = INCLAUSE_ITEMS_PADDING;
-                    let yPos: number = 0;
+                    let yPos: number = INCLAUSE_ITEMS_PADDING;
                     for (let i=0; i<parent_i; i++) {
-                        yPos += INCLAUSE_ITEMS_PADDING + parentBoxSizes[i].height;
+                        yPos += ELM_ITEMS_PADDING + parentBoxSizes[i].height;
                     }
-                    yPos += INCLAUSE_ITEMS_PADDING;
                     return (
                         <g
                             key={`G_parent2_${parent_i}`}

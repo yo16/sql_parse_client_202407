@@ -5,7 +5,7 @@ import { ClauseColumnBox } from "./ClauseColumnBox";
 
 import type { BoxSize } from "./types";
 import {
-    COLUMN_WIDTH, INCLAUSE_ITEMS_PADDING, CLAUSE_HEADER_HEIGHT, INCOLUMNS_ITEMS_PADDING
+    COLUMN_WIDTH, INCLAUSE_ITEMS_PADDING, CLAUSE_HEADER_HEIGHT
 } from "./constCanvasComponents";
 import { getTextPosByHeight, initializeBoxSizes } from "./commonFunctions";
 
@@ -51,7 +51,7 @@ export function ClauseColumnsBox({
     }
     function getCurHeight() {
         return columnsSize.reduce(
-            (acc, sz, i) => (acc + ((i > 0)? INCOLUMNS_ITEMS_PADDING: 0) + sz.height),
+            (acc, sz, i) => (acc + ((i > 0)? INCLAUSE_ITEMS_PADDING: 0) + sz.height),
             CLAUSE_HEADER_HEIGHT + INCLAUSE_ITEMS_PADDING*2 // "column"のヘッダーと上下
         );
     }
@@ -91,7 +91,7 @@ export function ClauseColumnsBox({
                 let yPos: number = CLAUSE_HEADER_HEIGHT + INCLAUSE_ITEMS_PADDING;
                 for(let j=0; j<i; j++) {
                     yPos += columnsSize[j].height;
-                    yPos += INCOLUMNS_ITEMS_PADDING;
+                    yPos += INCLAUSE_ITEMS_PADDING;
                 }
                 return (
                     <g

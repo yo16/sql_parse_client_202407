@@ -49,10 +49,12 @@ export function ClauseFromsBox({
     function getCurHeight(): number {
         const curHeight: number
             = fromSizes.reduce(
-                (accHeight, curSize) => {
-                    return accHeight + INCLAUSE_ITEMS_PADDING + curSize.height;
+                (accHeight, curSize, i) => {
+                    return accHeight
+                        + ((i>0)? INCLAUSE_ITEMS_PADDING: 0)
+                        + curSize.height;
                 },
-                CLAUSE_HEADER_HEIGHT + INCLAUSE_ITEMS_PADDING // "from"のヘッダーと下
+                CLAUSE_HEADER_HEIGHT + INCLAUSE_ITEMS_PADDING*2 // "from"のヘッダーと上下
             );
         return curHeight;
     }
@@ -100,7 +102,7 @@ export function ClauseFromsBox({
                 // y位置
                 let yPos: number = CLAUSE_HEADER_HEIGHT + INCLAUSE_ITEMS_PADDING;
                 for (let i=0; i<from_i; i++) {
-                    yPos += fromSizes[i].height + INCLAUSE_ITEMS_PADDING;
+                    yPos += INCLAUSE_ITEMS_PADDING + fromSizes[i].height;
                 }
 
                 return (
