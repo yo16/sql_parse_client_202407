@@ -16,7 +16,8 @@ import React, { useState, ReactElement, useMemo, useEffect } from "react";
 import { ElementBox } from "./ElementBox";
 
 import { BoxSize } from "./types";
-import { INCLAUSE_ITEMS_PADDING, ELM_INDENT_WIDTH, ELM_ITEMS_PADDING } from "./constCanvasComponents";
+//import { INCLAUSE_ITEMS_PADDING, ELM_INDENT_WIDTH, ELM_ITEMS_PADDING } from "./constCanvasComponents";
+import { ELM_INDENT_WIDTH, ELM_ITEMS_PADDING } from "./constCanvasComponents";
 import { initializeBoxSizes } from "./commonFunctions";
 
 import "./commonSvgStyles.css";
@@ -62,7 +63,7 @@ export function ElementsBox({
             ELM_INDENT_WIDTH + childBoxSize.width
         );
         // 左右のpaddingを加える
-        return maxWidth + INCLAUSE_ITEMS_PADDING*2;
+        return maxWidth + ELM_ITEMS_PADDING*2;
     }
     function getCurHeight(): number {
         // 親の高さ＝アイテムの上のpadding＋アイテムの高さ
@@ -76,7 +77,7 @@ export function ElementsBox({
         // 親＋子＋上下の隙間
         return accumulatedParentHeight
             + childHeight
-            + INCLAUSE_ITEMS_PADDING*2;
+            + ELM_ITEMS_PADDING*2;
     }
 
     // parentBoxSizes, childBoxSizeが変わった場合は、再計算した自分のサイズを呼び出し元へ通知
@@ -114,12 +115,12 @@ export function ElementsBox({
             {children ? (
                 <>{/* Reactのchildrenが指定されている場合は、その要素を親とする */}
                 {React.Children.map(children, (parent, parent_i) => {     // 親が入っているので、変数名は"parent"にする
-                    const xPos: number = INCLAUSE_ITEMS_PADDING;
+                    const xPos: number = ELM_ITEMS_PADDING;
                     let yPos: number = 0;
                     for (let i=0; i<parent_i; i++) {
-                        yPos += INCLAUSE_ITEMS_PADDING + parentBoxSizes[i].height;
+                        yPos += ELM_ITEMS_PADDING + parentBoxSizes[i].height;
                     }
-                    yPos += INCLAUSE_ITEMS_PADDING;
+                    yPos += ELM_ITEMS_PADDING;
                     return (
                         <g
                             key={`G_parent1_${parent_i}`}
@@ -143,8 +144,8 @@ export function ElementsBox({
             ) : (
                 <>{/* Reactのchildrenが指定されていない場合は、parentNamesから親要素を作成する */}
                 {parentNames.map((parentName: string, parent_i) => {
-                    const xPos: number = INCLAUSE_ITEMS_PADDING;
-                    let yPos: number = INCLAUSE_ITEMS_PADDING;
+                    const xPos: number = ELM_ITEMS_PADDING;
+                    let yPos: number = ELM_ITEMS_PADDING;
                     for (let i=0; i<parent_i; i++) {
                         yPos += ELM_ITEMS_PADDING + parentBoxSizes[i].height;
                     }
@@ -169,8 +170,8 @@ export function ElementsBox({
                 <g
                     transform={
                         "translate("
-                        + `${INCLAUSE_ITEMS_PADDING + ELM_INDENT_WIDTH}, `
-                        + `${curSize.height - (INCLAUSE_ITEMS_PADDING + childBoxSize.height)}`
+                        + `${ELM_ITEMS_PADDING + ELM_INDENT_WIDTH}, `
+                        + `${curSize.height - (ELM_ITEMS_PADDING + childBoxSize.height)}`
                         + ")"
                     }
                 >

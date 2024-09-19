@@ -34,7 +34,7 @@ export const COLUMN_NAME_HEIGHT = 30;   // 削除予定
 // columnElementsBoxとcolumnElementの隙間
 export const COLELMS_PADDING = 4;   // 削除予定
 // Element要素間の隙間
-export const ELM_ITEMS_PADDING = 2;
+export const ELM_ITEMS_PADDING = 4;
 
 // columnElementの高さ
 export const COLELM_HEIGHT = 24;
