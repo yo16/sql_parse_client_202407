@@ -8,6 +8,7 @@ import type { BoxSize } from "./types";
 import { COLUMN_NAME_HEIGHT, COLUMN_WIDTH, COLELM_INDENT_WIDTH, COLELMS_PADDING } from "./constCanvasComponents";
 import { getTextPosByHeight } from "./commonFunctions";
 
+import "./commonSvgStyles.css";
 
 interface ClauseColumnBoxProps {
     clauseColumn: ClauseColumn;
@@ -33,6 +34,16 @@ export function ClauseColumnBox({
         },
         [columnElementsSize]
     )
+/*
+columnElementsを上にもってきて、
+字下げは、asの項目名にする
+asがなければ、字下げしない
+
+fromも同じようにする
+同じロジックと同じサイズ
+
+elementsと、このロジックを共通化できないか
+*/
 
     // 現在のサイズを取得
     function getCurWidth(): number {
@@ -86,13 +97,15 @@ export function ClauseColumnBox({
     );
 
     return (
-        <>
+        <g
+            className="columnBox"
+        >
             <rect
                 x={0}
                 y={0}
                 width={curSize.width}
                 height={curSize.height}
-                fill={"#ff0"}
+                className="bg"
             />
             <text
                 {...(getTextPosByHeight(COLUMN_NAME_HEIGHT))}
@@ -110,7 +123,7 @@ export function ClauseColumnBox({
                     />
                 </g>
             )}
-        </>
+        </g>
     );
 }
 

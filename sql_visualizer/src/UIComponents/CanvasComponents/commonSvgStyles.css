@@ -1,0 +1,30 @@
+
+/* selectBox */
+.selectBox > rect.bg {
+    fill: #dee;
+    stroke: #999;
+    stroke-width: 0.5;
+}
+
+/* withsBoxのベースカラー */
+.withsBox > rect.bg {
+    fill: #8BD77F;
+}
+
+/* fromsBoxのベースカラー */
+.fromsBox > rect.bg {
+    fill: #E8E88E;
+}
+
+/* columnsBoxのベースカラー */
+.columnsBox > rect.bg {
+    fill: #A0A0E1;
+}
+
+/* With句、From句、Columの内側のBox */
+.withsGroupBox > rect.bg,
+.fromBox > rect.bg,
+.columnBox > rect.bg {
+    fill: #fff;
+    opacity: 0.6;
+}

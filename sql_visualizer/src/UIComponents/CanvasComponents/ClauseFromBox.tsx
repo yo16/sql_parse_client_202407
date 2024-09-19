@@ -8,6 +8,8 @@ import { FROM_WIDTH, FORM_NAME_HEIGHT, INCLAUSE_ITEMS_PADDING } from "./constCan
 import { getTextPosByHeight } from "./commonFunctions";
 import { TableStructQueryBox } from "./TableStructQueryBox";
 
+import "./commonSvgStyles.css";
+
 interface ClauseFromBoxProps {
     clauseFrom: ClauseFrom;
     onSetSize: (newSize: BoxSize) => void;
@@ -68,23 +70,25 @@ export function ClauseFromBox({
 
 
     return (
-        <g>
+        <g
+            className="fromBox"
+        >
             <rect
                 x={0}
                 y={0}
                 width={curSize.width}
                 height={curSize.height}
-                fill={"#fdb"}
+                className="bg"
             />
             <text
                 {...(getTextPosByHeight(FORM_NAME_HEIGHT))}
                 fill={"#f00"}
             >
-                {(clauseFrom.db)?`${clauseFrom.db}.`:''}{clauseFrom.tableName}
+                {(clauseFrom.db)?`${clauseFrom.db}.`:''}{clauseFrom.originTableName}{(clauseFrom.asTableName) && (` as ${clauseFrom.asTableName}`)}
             </text>
             {(clauseFrom.tableStruct instanceof TableStructQuery) && ((() => {
                 const xPos: number = INCLAUSE_ITEMS_PADDING;
-                const yPos: number = INCLAUSE_ITEMS_PADDING;
+                const yPos: number = FORM_NAME_HEIGHT + INCLAUSE_ITEMS_PADDING;
                 return (
                     <g
                         transform={`translate(${xPos}, ${yPos})`}

@@ -7,8 +7,9 @@ import type { BoxSize } from "./types";
 import {
     COLUMN_WIDTH, INCLAUSE_ITEMS_PADDING, CLAUSE_HEADER_HEIGHT, COLUMN_NAME_HEIGHT, INCOLUMNS_ITEMS_PADDING
 } from "./constCanvasComponents";
-import { arraysEqual, getTextPosByHeight } from "./commonFunctions";
+import { getTextPosByHeight, initializeBoxSizes } from "./commonFunctions";
 
+import "./commonSvgStyles.css";
 
 interface ClauseColumnsBoxProps {
     clauseColumns: ClauseColumns;
@@ -20,7 +21,7 @@ export function ClauseColumnsBox({
 }: ClauseColumnsBoxProps) {
     // column要素群(ClauseColumnBox)の各々のサイズ
     const [columnsSize, setColumnsSize] = useState<BoxSize[]>(
-        () => initializeColumnsSize(clauseColumns.columnCount)
+        () => initializeBoxSizes(clauseColumns.columnCount)
     );
 
     // columnsBox全体のサイズ
@@ -61,13 +62,15 @@ export function ClauseColumnsBox({
     );
 
     return (
-        <>
+        <g
+            className="columnsBox"
+        >
             <rect
                 x={0}
                 y={0}
                 width={curSize.width}
                 height={curSize.height}
-                fill={"#00f"}
+                className="bg"
             />
             
             <rect
@@ -106,11 +109,6 @@ export function ClauseColumnsBox({
                 )
             })}
 
-        </>
+        </g>
     );
-}
-
-
-function initializeColumnsSize(colCount: number): BoxSize[] {
-    return new Array(colCount).fill({width: 0, height: 0});
 }

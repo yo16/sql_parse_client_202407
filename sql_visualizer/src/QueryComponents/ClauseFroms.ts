@@ -53,7 +53,8 @@ export class ClauseFrom {
             const baseFrom: BaseFrom = from as BaseFrom;
             this._tableStruct = new TableStructTable(
                 baseFrom.db,
-                baseFrom.table
+                baseFrom.table,
+                baseFrom.as
             );
         }
         
@@ -62,7 +63,8 @@ export class ClauseFrom {
             const joinFrom: JoinFrom = from as JoinFrom;
             const joinedTable = new TableStructTable(
                 joinFrom.db,
-                joinFrom.table
+                joinFrom.table,
+                joinFrom.as
             );
 
             // usingかonのいずれかを使用する
@@ -111,8 +113,22 @@ export class ClauseFrom {
     get db() {
         return this._tableStruct?.db;
     }
-    get tableName() {
+    // select句やwhere句で解釈されるテーブル名（asがあればasにリネームされた名前）を返す
+    get tableName(): string | undefined {
+        if (! this._tableStruct) return undefined;
+        
+        // asがあったら、asを返す
+        if (this._tableStruct.as_) return this._tableStruct.as_;
+
+        return this._tableStruct.tableName;
+    }
+    // asがあろうとなかろうと、元のテーブル名を返す
+    get originTableName(): string | undefined {
         return this._tableStruct?.tableName;
+    }
+    // asがあろうとなかろう(null)と、asで定義された名前を返す
+    get asTableName(): string | null | undefined {
+        return this._tableStruct?.as_;
     }
     get columns() {
         if (this._fromType === 'TableExpr') {

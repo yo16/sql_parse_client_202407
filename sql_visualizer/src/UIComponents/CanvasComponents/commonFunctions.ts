@@ -1,5 +1,7 @@
 // 共通関数
 
+import { BoxSize } from "./types";
+
 // number配列の比較
 export function arraysEqual(arr1: number[], arr2: number[]): boolean {
     if (arr1.length !== arr2.length) return false;
@@ -16,4 +18,9 @@ export function getTextPosByHeight(fontSize: number) {
         y: fontSize*0.75,
         fontSize: fontSize/1.5,
     }
+}
+
+// BoxSizeの配列の初期設定
+export function initializeBoxSizes(fromCount: number): BoxSize[] {
+    return new Array(fromCount).fill({width: 0, height: 0});
 }

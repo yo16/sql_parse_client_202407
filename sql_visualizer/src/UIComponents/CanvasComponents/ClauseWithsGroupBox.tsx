@@ -4,6 +4,9 @@ import { WithsGroupManager } from "./withClauseTools/WithsGroupManager";
 import { ClauseWithBox } from "./ClauseWithBox";
 import { BoxSize } from "./types";
 import { WITH_WIDTH, INCLAUSE_ITEMS_PADDING, CLAUSE_HEADER_HEIGHT } from "./constCanvasComponents";
+import { initializeBoxSizes } from "./commonFunctions";
+
+import "./commonSvgStyles.css";
 
 interface ClauseWithsGroupBoxProps {
     withsGroupManager: WithsGroupManager,
@@ -15,7 +18,7 @@ export function ClauseWithsGroupBox({
 }: ClauseWithsGroupBoxProps) {
     // WithBoxの各々のサイズ
     const [withSizes, setWithSizes] = useState<BoxSize[]>(
-        () => initializeWithSize(withsGroupManager.withList.length)
+        () => initializeBoxSizes(withsGroupManager.withList.length)
     );
 
     // WithsGroupBox全体のサイズ
@@ -75,13 +78,15 @@ export function ClauseWithsGroupBox({
     }
 
     return (
-        <g>
+        <g
+            className="withsGroupBox"
+        >
             <rect
                 x={0}
                 y={0}
                 width={curSize.width}
                 height={curSize.height}
-                fill={"#f66"}
+                className="bg"
             />
             {withsGroupManager.withList.map(
                 (w, w_i) => {
@@ -109,8 +114,4 @@ export function ClauseWithsGroupBox({
             )}
         </g>
     );
-}
-
-function initializeWithSize(withCount: number): BoxSize[] {
-    return new Array(withCount).fill({width: 0, height: 0});
 }

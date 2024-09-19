@@ -4,8 +4,8 @@ import { TableStruct } from "./TableStruct";
 export class TableStructTable extends TableStruct {
     private _columns: string[];
 
-    constructor(db: string | null, tableName: string) {
-        super(db, tableName);
+    constructor(db: string | null, tableName: string, as_: string | null) {
+        super(db, tableName, as_);
 
         this._columns = [];
     }

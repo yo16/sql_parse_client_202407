@@ -5,6 +5,7 @@ import { ColumnElementBox } from "./ColumnElementBox";
 
 import type { BoxSize } from "./types";
 import { COLELM_ITEMS_PADDING } from "./constCanvasComponents";
+import { initializeBoxSizes } from "./commonFunctions";
 
 // １つの列のために利用する列群
 interface ColumnElementsBoxProps {
@@ -16,10 +17,9 @@ export function ColumnElementsBox({
     onSetSize,
 }: ColumnElementsBoxProps) {
     // ColumnElement要素たちのサイズ
-    const [colElmSizes, setColElmSizes]
-        = useState<BoxSize[]>(
-            () => new Array(tableColumns.columnCount).fill({width:0, height:0})
-        );
+    const [colElmSizes, setColElmSizes] = useState<BoxSize[]>(
+        () => initializeBoxSizes(tableColumns.columnCount)
+    );
     // この要素のサイズ
     const curSize: BoxSize = useMemo(
         () => {
@@ -89,7 +89,7 @@ export function ColumnElementsBox({
                 y={0}
                 width={curSize.width}
                 height={curSize.height}
-                fill="#f00"
+                fill="#339"
             />
             {tableColumnYvalList.map((tc, tc_i)=>{
                 const xPos: number = COLELM_ITEMS_PADDING;

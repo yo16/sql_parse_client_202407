@@ -12,6 +12,8 @@ import {
 
 import { BoxSize } from "./types";
 
+import "./commonSvgStyles.css";
+
 interface TableStructQuerySelectBoxProps {
     select: QuerySelect;
     onSetSize: (newSize: BoxSize) => void;
@@ -78,7 +80,9 @@ export function TableStructQuerySelectBox({
     ;
 
     return (
-        <>
+        <g
+            className="selectBox"
+        >
             {/* Query全体の枠 */}
             <rect
                 x={0}
@@ -87,9 +91,7 @@ export function TableStructQuerySelectBox({
                 height={curSize.height}
                 rx={5}
                 ry={5}
-                fill={"#dee"}
-                stroke={"#999"}
-                strokeWidth={0.5}
+                className="bg"
             />
 
             {/* Withs */}
@@ -123,7 +125,7 @@ export function TableStructQuerySelectBox({
                     onSetSize={handleOnSetColumnsSize}
                 />
             </g>
-        </>
+        </g>
     );
 }
 

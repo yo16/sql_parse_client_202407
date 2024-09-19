@@ -6,10 +6,12 @@
 export abstract class TableStruct {
     private _db: string | null;
     private _tableName: string;
+    private _as: string | null;
 
-    constructor(db: string | null, tableName: string) {
+    constructor(db: string | null, tableName: string, as_: string | null) {
         this._db = db;
         this._tableName = tableName;
+        this._as = as_;
     }
     
     get db() {
@@ -17,5 +19,8 @@ export abstract class TableStruct {
     }
     get tableName() {
         return this._tableName;
+    }
+    get as_() {
+        return this._as;
     }
 }

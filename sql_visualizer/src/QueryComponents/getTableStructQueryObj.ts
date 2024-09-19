@@ -6,10 +6,10 @@ import { TableStructQuery } from "./TableStructQuery";
 
 export function getTableStructQueryObj(
     ast: AST,
-    name: string | undefined = undefined
+    as_: string | undefined = undefined
 ): TableStructQuery | null {
     if (ast.type === 'select') {
-        return new QuerySelect(ast as NspSelect, name);
+        return new QuerySelect(ast as NspSelect, as_);
     }
 
     return null;

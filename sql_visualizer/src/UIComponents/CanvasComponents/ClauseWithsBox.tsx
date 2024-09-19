@@ -5,7 +5,9 @@ import { WithsManager } from "./withClauseTools/WithsManager";
 import { BoxSize } from "./types";
 
 import { WITH_WIDTH, INCLAUSE_ITEMS_PADDING, CLAUSE_HEADER_HEIGHT } from "./constCanvasComponents";
-import { getTextPosByHeight } from "./commonFunctions";
+import { getTextPosByHeight, initializeBoxSizes } from "./commonFunctions";
+
+import "./commonSvgStyles.css";
 
 interface ClauseWithsBoxProps {
     withsManager: WithsManager,
@@ -17,7 +19,7 @@ export function ClauseWithsBox({
 }: ClauseWithsBoxProps) {
     // WithsGroupの各々のサイズ
     const [withsGroupSizes, setWithsGroupSizes] = useState<BoxSize[]>(
-        () => initializeWithsSize(withsManager.withsGroupList.length)
+        () => initializeBoxSizes(withsManager.withsGroupList.length)
     );
 
     // WithsBox全体のサイズ
@@ -78,13 +80,15 @@ export function ClauseWithsBox({
     }
 
     return (
-        <g>
+        <g
+            className="withsBox"
+        >
             <rect
                 x={0}
                 y={0}
                 width={curSize.width}
                 height={curSize.height}
-                fill={"#f00"}
+                className="bg"
             />
             <rect
                 x={0}
@@ -125,8 +129,4 @@ export function ClauseWithsBox({
             )}
         </g>
     );
-}
-
-function initializeWithsSize(withsGroupCount: number): BoxSize[] {
-    return new Array(withsGroupCount).fill({width: 0, height: 0});
 }

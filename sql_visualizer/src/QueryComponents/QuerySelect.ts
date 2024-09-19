@@ -17,8 +17,8 @@ export class QuerySelect extends TableStructQuery {
     private _fromsClause: ClauseFroms;
     private _withsClause: ClauseWiths;
 
-    constructor(astSelect: NspSelect, name: string | undefined) {
-        super(astSelect, name);
+    constructor(astSelect: NspSelect, as_: string | undefined) {
+        super(astSelect, ((as_===undefined)? null: as_));
 
         this._columns = new ClauseColumns(astSelect.columns);
         this._fromsClause = new ClauseFroms(astSelect.from);

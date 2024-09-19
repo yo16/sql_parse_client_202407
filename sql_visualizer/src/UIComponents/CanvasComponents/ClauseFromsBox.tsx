@@ -6,7 +6,9 @@ import { ClauseFromBox } from "./ClauseFromBox";
 import { BoxSize } from "./types";
 
 import { FROM_WIDTH, INCLAUSE_ITEMS_PADDING, CLAUSE_HEADER_HEIGHT } from "./constCanvasComponents";
-import { getTextPosByHeight } from "./commonFunctions";
+import { getTextPosByHeight, initializeBoxSizes } from "./commonFunctions";
+
+import "./commonSvgStyles.css";
 
 interface ClauseFromsBoxProps {
     clauseFroms: ClauseFroms;
@@ -18,7 +20,7 @@ export function ClauseFromsBox({
 }: ClauseFromsBoxProps) {
     // from要素群(ClauseFromBox)の各々のサイズ
     const [fromSizes, setFromSizes] = useState<BoxSize[]>(
-        () => initializeFromSizes(clauseFroms.fromCount)
+        () => initializeBoxSizes(clauseFroms.fromCount)
     );
 
     // FromsBox全体のサイズ
@@ -69,13 +71,15 @@ export function ClauseFromsBox({
     }
 
     return (
-        <g>
+        <g
+            className="fromsBox"
+        >
             <rect
                 x={0}
                 y={0}
                 width={curSize.width}
                 height={curSize.height}
-                fill={"#ff0"}
+                className="bg"
             />
             <rect
                 x={0}
@@ -115,8 +119,4 @@ export function ClauseFromsBox({
             })}
         </g>
     );
-}
-
-function initializeFromSizes(fromCount: number): BoxSize[] {
-    return new Array(fromCount).fill({width: 0, height: 0});
 }
