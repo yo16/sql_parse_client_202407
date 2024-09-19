@@ -68,6 +68,11 @@ export class ClauseColumn {
         return "(composite column)";
     }
 
+    // asがあろうとなかろう(null)と、asで定義された名前を返す
+    get asColumnName(): string | null | undefined {
+        return this._as;
+    }
+
     get tableCols(): TableColumns {
         return this._tableColumns;
     }

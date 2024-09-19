@@ -29,8 +29,18 @@ text.clause-header-text {
     fill: #A0A0E1;
 }
 
+/* elementBox */
+.elementBox > rect.bg {
+    fill: #ccc;
+}
+.elementBox > text.element-text {
+    fill: #333;
+}
+
+
 /* With句、From句、Columの内側のBox */
 .withsGroupBox > rect.bg,
+.elementsBox > rect.bg,
 .fromBox > rect.bg,
 .columnBox > rect.bg {
     fill: #fff;

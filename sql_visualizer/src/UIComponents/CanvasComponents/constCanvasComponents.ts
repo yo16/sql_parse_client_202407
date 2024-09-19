@@ -29,14 +29,15 @@ export const INCOLUMNS_ITEMS_PADDING = 2;
 // columnの幅
 export const COLUMN_WIDTH = 100;
 // columnの列名を書く部分の高さ
-export const COLUMN_NAME_HEIGHT = 30;
+export const COLUMN_NAME_HEIGHT = 30;   // 削除予定
 
 // columnElementsBoxとcolumnElementの隙間
-export const COLELMS_PADDING = 4;
+export const COLELMS_PADDING = 4;   // 削除予定
 // columnElement要素間の隙間
 export const COLELM_ITEMS_PADDING = 2;
 
 // columnElementの高さ
-export const COLELM_HEIGHT = 20;
+export const COLELM_HEIGHT = 24;
 // columnElementのインデント
-export const COLELM_INDENT_WIDTH = 20;
+export const COLELM_INDENT_WIDTH = 20;  // 削除予定
+export const ELM_INDENT_WIDTH = 20;

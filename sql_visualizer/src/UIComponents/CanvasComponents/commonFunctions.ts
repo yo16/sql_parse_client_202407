@@ -1,5 +1,6 @@
 // 共通関数
 
+import { NULL_TABLE_NAME } from "@/QueryComponents/TableColumns";
 import { BoxSize } from "./types";
 
 // number配列の比較
@@ -23,4 +24,20 @@ export function getTextPosByHeight(fontSize: number) {
 // BoxSizeの配列の初期設定
 export function initializeBoxSizes(fromCount: number): BoxSize[] {
     return new Array(fromCount).fill({width: 0, height: 0});
+}
+
+// DB名とテーブル名と列名をくっつける処理
+// テーブル名が NULL_TABLE_NAME の場合は、テーブル名を書かない
+export function joinTableAndColumnName(
+    tableName: string,
+    columnName: string,
+    dbName?: string,
+) {
+    if (tableName === NULL_TABLE_NAME) {
+        return columnName;
+    }
+    const localDbName: string = dbName? `${dbName}.`: "";
+    const localTableName: string = (tableName.length > 0)? `${tableName}.`: "";
+
+    return `${localDbName}${localTableName}${columnName}`;
 }

@@ -1,14 +1,17 @@
-import { useState, useEffect, useMemo } from "react";
+// ClauseColumnBox
+// 
+// ElementsBoxのラッパー。
+// サイズ等の描画に関わる処理は、ElementsBoxで行う。
+// ここでは、Column特有の情報から、
+// 汎用的なElementsBoxに渡す情報へ、変換する役割を担う。
 
+import { useMemo } from "react";
 import { ClauseColumn } from "@/QueryComponents/ClauseColumns";
 import { TableColumns } from "@/QueryComponents/TableColumns";
-import { ColumnElementsBox } from "./ColumnElementsBox";
+import { ElementsBox } from "./ElementsBox";
 
-import type { BoxSize } from "./types";
-import { COLUMN_NAME_HEIGHT, COLUMN_WIDTH, COLELM_INDENT_WIDTH, COLELMS_PADDING } from "./constCanvasComponents";
-import { getTextPosByHeight } from "./commonFunctions";
-
-import "./commonSvgStyles.css";
+import { BoxSize } from "./types";
+import { joinTableAndColumnName } from "./commonFunctions";
 
 interface ClauseColumnBoxProps {
     clauseColumn: ClauseColumn;
@@ -18,113 +21,67 @@ export function ClauseColumnBox({
     clauseColumn,
     onSetSize,
 }: ClauseColumnBoxProps) {
-    // ElementsBoxのサイズ（Element"s"は１つしかない）
-    const [columnElementsSize, setColumnElementsSize] = useState<BoxSize>({width: 0, height: 0});
 
-    // ColumnBox全体のサイズ
-    const curSize = useMemo(
-        () => {
-            const newCurWidth: number = getCurWidth();
-            const newCurHeight: number = getCurHeight();
+    // 親の名前群と、子の名前
+    const [parentNames, childName]: [string[], string]
+        = useMemo(
+            () => {
+                const tc: TableColumns = clauseColumn.tableCols;
+                const tableNames: string[] = tc.getTables();
+                if (tc.columnCount > 1) {
+                    // 参照している列が２つ以上の場合
+                    // 親
+                    const parentNames: string[] = tableNames.map((tableName: string) => {
+                        const colNames = tc.getColumnsByTable(tableName);
+                        return colNames.map(
+                            (colName: string) => joinTableAndColumnName(tableName, colName)
+                        );
+                    }).flat();
+                    // 子（たぶんasはあるはず・・・）
+                    const childName: string
+                        = clauseColumn.asColumnName? clauseColumn.asColumnName: "";
+                    return [parentNames, childName];
 
-            return {
-                width: newCurWidth,
-                height: newCurHeight
-            };
-        },
-        [columnElementsSize]
-    )
-/*
-columnElementsを上にもってきて、
-字下げは、asの項目名にする
-asがなければ、字下げしない
+                } else if (tc.columnCount == 0) {
+                    // 参照している列がゼロの場合
+                    // 親＝asの名前があるはず
+                    // 子なし
+                    const asName: string
+                        = clauseColumn.asColumnName? clauseColumn.asColumnName: "";
+                    return [[asName], ""];
+                }
+                // 以下は、参照している列が１つの場合
+                
+                const targetTable: string = tc.getTables()[0];
+                const targetColumn: string = tc.getColumnsByTable(targetTable)[0];
+                const parentName: string = joinTableAndColumnName(targetTable, targetColumn);
+                
+                // 列名が一致している場合は、親のみ
+                if (targetColumn === clauseColumn.columnName) {
+                    return [
+                        [parentName],
+                        ""
+                    ];
+                };
+                // 以下は、参照している列が１つで、親子で列名が一致していない場合
+                
+                return [
+                    [parentName],
+                    clauseColumn.columnName
+                ];
+            },
+            [clauseColumn]
+        );
 
-fromも同じようにする
-同じロジックと同じサイズ
-
-elementsと、このロジックを共通化できないか
-*/
-
-    // 現在のサイズを取得
-    function getCurWidth(): number {
-        // columnElementsは、インデントも含めた幅と比較する
-        const curWidth: number
-            = Math.max((COLELM_INDENT_WIDTH+columnElementsSize.width), COLUMN_WIDTH)
-            + COLELMS_PADDING*2;    // 左右
-        return curWidth;
-    }
-    function getCurHeight(): number {
-        const curHeight: number
-            = COLUMN_NAME_HEIGHT
-            + columnElementsSize.height
-            + ((columnElementsSize.height>0)? COLELMS_PADDING*2: 0);    // elementsを表示する場合は上下のpadding
-        return curHeight;
-    }
-
-    // columnElementsSizeが変わった場合は、呼び出し元へ通知
-    useEffect(
-        () => onSetSize(curSize),
-        [columnElementsSize]
-    );
-
-    // width, heightが変わったときのハンドラ
     function handleOnSetSize(newSize: BoxSize) {
-        setColumnElementsSize(newSize);
+        onSetSize(newSize);
     }
-
-    // ColumnElementsBoxを描画するかどうかの判定
-    const drawElementsBox: boolean = useMemo(
-        () => {
-            const tc: TableColumns = clauseColumn.tableCols;
-            
-            // 参照している列が２つ以上の場合は、表示
-            if (tc.columnCount > 1) return true;
-
-            // 参照している列がゼロの場合は、非表示
-            if (tc.columnCount == 0) return false;
-
-            // 以下は、参照している列が１つの場合
-            
-            const targetTable: string = tc.getTables()[0];
-            const targetColumn: string = tc.getColumnsByTable(targetTable)[0];
-            
-            // 列名が一致している場合は、非表示（表示は不要）
-            if (targetColumn === clauseColumn.columnName) return false;
-            
-            return true;
-        },
-        [clauseColumn]
-    );
 
     return (
-        <g
-            className="columnBox"
-        >
-            <rect
-                x={0}
-                y={0}
-                width={curSize.width}
-                height={curSize.height}
-                className="bg"
-            />
-            <text
-                {...(getTextPosByHeight(COLUMN_NAME_HEIGHT))}
-            >
-                {clauseColumn.columnName}
-            </text>
-
-            {drawElementsBox && (
-                <g
-                    transform={`translate(${COLELMS_PADDING+COLELM_INDENT_WIDTH}, ${COLELMS_PADDING+COLUMN_NAME_HEIGHT})`}
-                >
-                    <ColumnElementsBox
-                        tableColumns={clauseColumn.tableCols}
-                        onSetSize={handleOnSetSize}
-                    />
-                </g>
-            )}
-        </g>
+        <ElementsBox
+            parentNames={parentNames}
+            childName={childName}
+            onSetSize={handleOnSetSize}
+        />
     );
 }
-
-

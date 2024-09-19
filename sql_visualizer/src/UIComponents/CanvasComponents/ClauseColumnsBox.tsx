@@ -5,7 +5,7 @@ import { ClauseColumnBox } from "./ClauseColumnBox";
 
 import type { BoxSize } from "./types";
 import {
-    COLUMN_WIDTH, INCLAUSE_ITEMS_PADDING, CLAUSE_HEADER_HEIGHT, COLUMN_NAME_HEIGHT, INCOLUMNS_ITEMS_PADDING
+    COLUMN_WIDTH, INCLAUSE_ITEMS_PADDING, CLAUSE_HEADER_HEIGHT, INCOLUMNS_ITEMS_PADDING
 } from "./constCanvasComponents";
 import { getTextPosByHeight, initializeBoxSizes } from "./commonFunctions";
 

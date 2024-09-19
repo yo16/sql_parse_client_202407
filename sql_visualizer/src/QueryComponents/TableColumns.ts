@@ -9,7 +9,7 @@ export type TableAndColumn = {
     columnName: string;
 };
 
-const NULL_TABLE_NAME = '___NULL___';   // この名前のテーブル名があった場合は、nullとみなされる
+export const NULL_TABLE_NAME = '___NULL___';   // この名前のテーブル名があった場合は、nullとみなされる
 
 export class TableColumns {
     private _tableColumns: {[tableName: string]:string[]} = {};
