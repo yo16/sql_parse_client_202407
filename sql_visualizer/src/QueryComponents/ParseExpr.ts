@@ -46,6 +46,17 @@ export class ParseExpr {
 
     // ExpressionValueのexprを解釈して、列名の配列を取得
     private static parseColumnsExpressionValue(expr: Expr): TableColumns {
+        // Expr.typeは、定義上 "binary_expr" しかないはずだが、それ以外も入るケースがある（バグ？）
+        // "binary_expr"の場合は確かに Expr だが、
+        // それ以外の場合は ExpressionValue なので、強制的にそのように解釈する
+        if (expr.type !== "binary_expr") {
+            const exprVal: ParseExpressionValue = new ParseExpressionValue(
+                expr as unknown as ExpressionValue
+            );
+            const tcs = exprVal.getTableColumns();
+            return tcs;
+        }
+
         const leftExprVal: ParseExpressionValue = new ParseExpressionValue(
             expr.left as ExpressionValue
         );
