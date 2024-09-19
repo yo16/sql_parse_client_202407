@@ -12,6 +12,7 @@ import {
 
 import { BoxSize } from "./types";
 
+import { getTextPosByHeight } from "./commonFunctions";
 import "./commonSvgStyles.css";
 
 interface TableStructQuerySelectBoxProps {
@@ -39,9 +40,10 @@ export function TableStructQuerySelectBox({
                 + ((select.withs.length > 0)? (withsSize.width + QUERY_ITEMS_PADDING): 0)
                 + fromsSize.width + QUERY_ITEMS_PADDING
                 + columnsSize.width + QUERY_ITEMS_PADDING;
-            // 高さ：最大の高さ＋上下の隙間(2)
+            // 高さ：最大の高さ＋ヘッダー＋上下の隙間(2)
             const newHeight: number
                 = Math.max(withsSize.height, fromsSize.height, columnsSize.height)
+                + CLAUSE_HEADER_HEIGHT
                 + QUERY_ITEMS_PADDING * 2;
             
             return {
@@ -89,15 +91,26 @@ export function TableStructQuerySelectBox({
                 y={0}
                 width={curSize.width}
                 height={curSize.height}
-                rx={5}
-                ry={5}
                 className="bg"
             />
+            <rect
+                x={0}
+                y={0}
+                width={curSize.width}
+                height={CLAUSE_HEADER_HEIGHT}
+                className="clause-header-bg"
+            />
+            <text
+                {...(getTextPosByHeight(CLAUSE_HEADER_HEIGHT))}
+                className="clause-header-text"
+            >
+                select
+            </text>
 
             {/* Withs */}
             {(! withsManager.isEmpty()) && (
                 <g
-                    transform={`translate(${QUERY_ITEMS_PADDING}, ${QUERY_ITEMS_PADDING})`}
+                    transform={`translate(${QUERY_ITEMS_PADDING}, ${CLAUSE_HEADER_HEIGHT + QUERY_ITEMS_PADDING})`}
                     name="WithsBoxGroup"
                 >
                     <ClauseWithsBox
@@ -108,7 +121,7 @@ export function TableStructQuerySelectBox({
             )}
             
             {/* Froms */}
-            <g transform={`translate(${fromsStartX}, ${QUERY_ITEMS_PADDING})`}>
+            <g transform={`translate(${fromsStartX}, ${CLAUSE_HEADER_HEIGHT + QUERY_ITEMS_PADDING})`}>
                 <ClauseFromsBox
                     clauseFroms={select.froms}
                     onSetSize={handleOnSetFromsSize}
@@ -117,7 +130,7 @@ export function TableStructQuerySelectBox({
 
             {/* Columns */}
             <g
-                transform={`translate(${columnsStartX}, ${QUERY_ITEMS_PADDING})`}
+                transform={`translate(${columnsStartX}, ${CLAUSE_HEADER_HEIGHT + QUERY_ITEMS_PADDING})`}
                 name={`TableStructQuerySelectBox`}
             >
                 <ClauseColumnsBox

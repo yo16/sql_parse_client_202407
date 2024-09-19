@@ -72,18 +72,16 @@ export function ClauseColumnsBox({
                 height={curSize.height}
                 className="bg"
             />
-            
             <rect
                 x={0}
                 y={0}
                 width={curSize.width}
                 height={CLAUSE_HEADER_HEIGHT}
-                fill={"#fff"}
+                className="clause-header-bg"
             />
             <text
                 {...(getTextPosByHeight(CLAUSE_HEADER_HEIGHT))}
-                fontStyle={"italic"}
-                fill={"#f00"}
+                className="clause-header-text"
             >
                 column
             </text>

@@ -1,22 +1,30 @@
 
-/* selectBox */
-.selectBox > rect.bg {
-    fill: #dee;
-    stroke: #999;
-    stroke-width: 0.5;
+/* Clauseヘッダー */
+rect.clause-header-bg {
+    fill: #fff;
+    opacity: 0.2;
+}
+text.clause-header-text {
+    fill: #666;
+    font-style: italic;
 }
 
-/* withsBoxのベースカラー */
+/* selectBox */
+.selectBox > rect.bg {
+    fill: #b9d6d6;
+}
+
+/* withsBox */
 .withsBox > rect.bg {
     fill: #8BD77F;
 }
 
-/* fromsBoxのベースカラー */
+/* fromsBox */
 .fromsBox > rect.bg {
-    fill: #E8E88E;
+    fill: #d6d684;
 }
 
-/* columnsBoxのベースカラー */
+/* columnsBox */
 .columnsBox > rect.bg {
     fill: #A0A0E1;
 }
