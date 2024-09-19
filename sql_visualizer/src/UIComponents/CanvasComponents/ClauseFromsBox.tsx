@@ -57,7 +57,7 @@ export function ClauseFromsBox({
         return curHeight;
     }
 
-    // withsGroupSizeが変わった場合は、呼び出し元へ通知
+    // fromSizeが変わった場合は、呼び出し元へ通知
     useEffect(
         () => onSetSize(curSize),
         [fromSizes]
