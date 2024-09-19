@@ -18,6 +18,9 @@ text.clause-header-text {
 .withsBox > rect.bg {
     fill: #8BD77F;
 }
+.withBox > text.with-name-text {
+    fill: #333;
+}
 
 /* fromsBox */
 .fromsBox > rect.bg {

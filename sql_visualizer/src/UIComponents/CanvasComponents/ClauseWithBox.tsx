@@ -3,8 +3,9 @@ import { useState, useMemo, useEffect } from "react";
 
 import { WithInfo } from "./withClauseTools/WithInfo";
 import { TableStructQuerySelectBox } from "./TableStructQuerySelectBox";
+
 import { BoxSize } from "./types";
-import { WITH_NAME_HEIGHT } from "./constCanvasComponents";
+import { WITH_NAME_HEIGHT, CLAUSE_HEADER_HEIGHT } from "./constCanvasComponents";
 import { getTextPosByHeight } from "./commonFunctions";
 
 interface ClauseWithBoxProps {
@@ -56,17 +57,23 @@ export function ClauseWithBox({
     }
 
     return (
-        <g>
+        <g
+            className="withBox"
+        >
             <TableStructQuerySelectBox
                 select={withInfo.selectObj}
                 onSetSize={handleOnSetSize}
             />
-            <text
-                {...(getTextPosByHeight(WITH_NAME_HEIGHT))}
-                fill={"#000"}
+            <g
+                transform={`translate(${0}, ${CLAUSE_HEADER_HEIGHT})`}
             >
-                {withInfo.name}
-            </text>
+                <text
+                    {...(getTextPosByHeight(WITH_NAME_HEIGHT))}
+                    className="with-name-text"
+                >
+                    {withInfo.name}
+                </text>
+            </g>
         </g>
     );
 }
