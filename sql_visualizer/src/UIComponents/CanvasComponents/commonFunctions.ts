@@ -13,11 +13,11 @@ export function arraysEqual(arr1: number[], arr2: number[]): boolean {
 }
 
 // 文字を入力する高さに応じた、textのx位置、y位置
-export function getTextPosByHeight(fontSize: number) {
+export function getTextPosByHeight(rectHeight: number) {
     return {
-        x: fontSize/4,
-        y: fontSize*0.75,
-        fontSize: fontSize/1.5,
+        x: rectHeight/4,
+        y: rectHeight*0.75,
+        fontSize: rectHeight/1.5,
     }
 }
 
