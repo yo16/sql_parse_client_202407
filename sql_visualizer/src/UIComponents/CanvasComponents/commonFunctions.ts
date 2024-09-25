@@ -17,8 +17,11 @@ export function getTextPosByHeight(rectHeight: number) {
     return {
         x: rectHeight/4,
         y: rectHeight*0.75,
-        fontSize: rectHeight/1.5,
+        fontSize: getFontSizeByHeight(rectHeight),
     };
+}
+export function getFontSizeByHeight(height: number): number {
+    return height/1.5;
 }
 
 // BoxSizeの配列の初期設定
