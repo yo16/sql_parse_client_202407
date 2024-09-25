@@ -34,5 +34,5 @@ export const ELM_INDENT_WIDTH = 20;
 // Elementの高さ（フォントに合わせるため仮の値）
 export const ELM_HEIGHT = 24;
 // Elementの幅のmin/max
-export const ELM_MIN_WIDTH = 50;
-export const ELM_MAX_WIDTH = 80;
+export const ELM_MIN_WIDTH = 100;
+export const ELM_MAX_WIDTH = 200;
