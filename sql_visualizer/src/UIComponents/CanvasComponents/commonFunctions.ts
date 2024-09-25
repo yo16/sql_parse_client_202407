@@ -18,7 +18,7 @@ export function getTextPosByHeight(rectHeight: number) {
         x: rectHeight/4,
         y: rectHeight*0.75,
         fontSize: rectHeight/1.5,
-    }
+    };
 }
 
 // BoxSizeの配列の初期設定
