@@ -37,7 +37,12 @@ export const COLELMS_PADDING = 4;   // 削除予定
 export const ELM_ITEMS_PADDING = 4;
 
 // columnElementの高さ
-export const COLELM_HEIGHT = 24;
+export const COLELM_HEIGHT = 24;    //削除予定
 // columnElementのインデント
 export const COLELM_INDENT_WIDTH = 20;  // 削除予定
 export const ELM_INDENT_WIDTH = 20;
+// Elementの高さ（フォントに合わせるため仮の値）
+export const ELM_HEIGHT = 24;
+// Elementの幅のmin/max
+export const ELM_MIN_WIDTH = 50;
+export const ELM_MAX_WIDTH = 80;

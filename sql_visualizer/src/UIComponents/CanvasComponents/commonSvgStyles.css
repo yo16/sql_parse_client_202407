@@ -32,11 +32,11 @@ text.clause-header-text {
     fill: #A0A0E1;
 }
 
-/* elementBox */
-.elementBox > rect.bg {
+/* rectContainText */
+.rectContainText > rect.bg {
     fill: #ccc;
 }
-.elementBox > text.element-text {
+.rectContainText > text.rect-text {
     fill: #333;
 }
 

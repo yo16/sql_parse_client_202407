@@ -13,12 +13,13 @@
 
 import React, { useState, ReactElement, useMemo, useEffect } from "react";
 
-import { ElementBox } from "./ElementBox";
+//import { ElementBox } from "./ElementBox";
+import { RectContainText } from "./RectContainText";
 
 import { BoxSize } from "./types";
 //import { INCLAUSE_ITEMS_PADDING, ELM_INDENT_WIDTH, ELM_ITEMS_PADDING } from "./constCanvasComponents";
-import { ELM_INDENT_WIDTH, ELM_ITEMS_PADDING } from "./constCanvasComponents";
-import { initializeBoxSizes } from "./commonFunctions";
+import { ELM_INDENT_WIDTH, ELM_ITEMS_PADDING, ELM_HEIGHT, ELM_MIN_WIDTH, ELM_MAX_WIDTH } from "./constCanvasComponents";
+import { initializeBoxSizes, getFontSizeByHeight } from "./commonFunctions";
 
 import "./commonSvgStyles.css";
 
@@ -155,10 +156,21 @@ export function ElementsBox({
                             transform={`translate(${xPos}, ${yPos})`}
                             name={`G_parent2_${parent_i}`}
                         >
+                            {/*
                             <ElementBox
                                 name={parentName}
                                 onSetSize={(newSize) => handleOnSetSizeParents(newSize, parent_i)}
                             />
+                            */}
+                           <RectContainText
+                                text={parentName}
+                                fontSize={getFontSizeByHeight(ELM_HEIGHT)}
+                                x={0}
+                                y={0}
+                                minWidth={ELM_MIN_WIDTH}
+                                maxWidth={ELM_MAX_WIDTH}
+                                onSetSize={(newSize) => handleOnSetSizeParents(newSize, parent_i)}
+                           />
                         </g>
                     );
                 })}
@@ -175,10 +187,21 @@ export function ElementsBox({
                         + ")"
                     }
                 >
+                    {/*
                     <ElementBox
                         name={childName}
                         onSetSize={handleOnSetSizeChild}
                     />
+                    */}
+                        <RectContainText
+                            text={childName}
+                            fontSize={getFontSizeByHeight(ELM_HEIGHT)}
+                            x={0}
+                            y={0}
+                            minWidth={ELM_MIN_WIDTH}
+                            maxWidth={ELM_MAX_WIDTH}
+                            onSetSize={handleOnSetSizeChild}
+                        />
                 </g>
             )}
         )
