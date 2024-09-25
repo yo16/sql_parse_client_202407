@@ -56,25 +56,19 @@ export const RectContainText: React.FC<RectContainTextProps> = ({
                 const lines: string[] = [];
                 let currentLine = '';
                 let linesMaxWidth: number = 0;  // 文字の幅だけで、paddingは含まない
-                console.log("11");
                 words.forEach((word) => {
-                    console.log("word", word);
-                    console.log("currentLine", currentLine);
                     // wordを１つ追加
                     const testCurrentLine: string
                         = (currentLine.length > 0) ? `${currentLine}.${word}`: word;
-                    console.log("testCurrentLine", testCurrentLine);
 
                     // textを入れてみたBBを取得
                     const curBB: DOMRect | null = getLineBB(testCurrentLine);
                     if (!curBB) return;
                     if (curBB.width <= maxWidth + rectPadding*2) {  // 両サイドのpaddingも考慮
                         // 超えていない
-                        console.log("超えてない");
                         currentLine = testCurrentLine;
                         linesMaxWidth = (linesMaxWidth < curBB.width)? curBB.width: linesMaxWidth;
                     } else {
-                        console.log("超えた", currentLine);
                         // 超えている
                         if (currentLine.length > 0) {
                             // wordを加える前をlinesに入れ、
@@ -90,8 +84,6 @@ export const RectContainText: React.FC<RectContainTextProps> = ({
                         }
                     }
                 });
-                console.log("999");
-                console.log("currentLine", currentLine);
                 lines.push(`${currentLine}`);
                 const curBB: DOMRect | null = getLineBB(currentLine);
                 if (!curBB) return;
