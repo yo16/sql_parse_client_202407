@@ -19,7 +19,7 @@ export class WithInfo {
     private _with: ClauseWith;
     // 項目名リスト
     private _columnNames: string[];
-    // 参照している親テーブル名リスト
+    // 参照している親テーブル名リスト（参照元を示すため、originテーブル名が入っている）
     private _parentTables: string[];
 
     // コンストラクタ
@@ -55,7 +55,7 @@ export class WithInfo {
     // パース(private)
     private parse(): void {
         // 参照しているテーブルを取得する（undefined以外）
-        this._parentTables = this._with.select.fromNames
+        this._parentTables = this._with.select.fromOriginNames
             .filter((nm): nm is string => nm !== undefined);
     }
 }

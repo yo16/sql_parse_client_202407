@@ -37,8 +37,13 @@ export class QuerySelect extends TableStructQuery {
         return this._columns;
     }
 
+    // asがあればasでリネームされたテーブル名群を返す
     public get fromNames(): (string | undefined)[] {
         return this._fromsClause.fromNames;
+    }
+    // asがあってもなくても、オリジナルのテーブル名群を返す
+    public get fromOriginNames(): (string | undefined)[] {
+        return this._fromsClause.fromOriginNames;
     }
 
     public get columnNames(): string[] {

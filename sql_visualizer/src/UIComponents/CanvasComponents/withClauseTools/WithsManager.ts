@@ -36,7 +36,7 @@ export class WithsManager {
         const curWithInfo: WithInfo = new WithInfo(curWith);
 
         // すべての親テーブルに対して上位グループを探す
-        let curParentGroupIndex: number = -1;
+        let curGroupIndex: number = -1;
         for (let i=0; i<curWithInfo.parentTables.length; i++){
             // 親テーブル
             const curParentTable: string = curWithInfo.parentTables[i];
@@ -51,15 +51,15 @@ export class WithsManager {
             }
             if (groupIndex < 0) {
                 // 見つからなかった場合は、最上位である0
-                curParentGroupIndex = 0;
+                curGroupIndex = 0;
             } else {
                 // 見つかった場合は、見つかったindexの下
-                curParentGroupIndex = groupIndex + 1;
+                curGroupIndex = groupIndex + 1;
             }
 
             // この段階で挿入しようとしているグループが存在しない（最下位）である場合は最下位で確定
             // それ以降の親テーブルについて調べる必要はない
-            if (this._withsGroupList.length <= curParentGroupIndex) {
+            if (this._withsGroupList.length <= curGroupIndex) {
                 // 最下位に１つ追加
                 this._withsGroupList.push(new WithsGroupManager());
                 break;
@@ -67,7 +67,7 @@ export class WithsManager {
         }
 
         // グループへWithInfoを追加
-        this._withsGroupList[curParentGroupIndex].addWithInfo(curWithInfo);
+        this._withsGroupList[curGroupIndex].addWithInfo(curWithInfo);
     }
 
     // withの名前リストを取得

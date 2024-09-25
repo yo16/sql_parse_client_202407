@@ -25,6 +25,10 @@ export class ClauseFroms {
     get fromNames(): (string | undefined)[] {
         return this._froms.map((f)=>f.tableName);
     }
+
+    get fromOriginNames(): (string | undefined)[] {
+        return this._froms.map((f)=>f.originTableName);
+    }
 }
 
 

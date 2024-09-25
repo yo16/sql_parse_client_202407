@@ -24,7 +24,7 @@ export class WithsGroupManager {
 
     // withの名前リストを取得
     public get tableNames(): string[] {
-        return this._withInfoList.map((wi:WithInfo) => wi.columNames).flat();
+        return this._withInfoList.map((wi:WithInfo) => wi.name).flat();
     }
 
     // withInfoリストを取得
@@ -34,6 +34,6 @@ export class WithsGroupManager {
     
     // withの名前に、引数の名前があるかどうかを確認
     public hasTable(tableName: string): boolean {
-        return tableName in this.tableNames;
+        return this.tableNames.includes(tableName);
     }
 }
