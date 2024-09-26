@@ -47,9 +47,13 @@ function Contents() {
             .then((res) => res.json())
             .then((json) => {
                 if (Object.keys(json).length===0) {
+                    // 戻り値がないときは何もしない
                     return;
                 }
-                setAstList(json.ast);
+                if (json.result !== 0) {
+                    // resultが0（正常）でない場合は、常にエラーを投げる
+                    throw new Error(`Server error. ${json.message}`);
+                }
             })
             .catch((e) => {
                 console.error("Fetch Error", e);
