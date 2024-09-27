@@ -81,14 +81,16 @@ function LineageCanvas({ astList }: LineageCanvasProps) {
         <div
             className="lineage-canvas-container"
         >
+            <div>
             <TransformWrapper
                 minScale={0.1}
+                centerZoomedOut={true}
             >
-                <TransformComponent>
-                    <svg width={svgWidth} height={svgHeight} style={{backgroundColor: "#dde"}} >
-                    {/* <svg width={550} height={400} style={{backgroundColor: "#dde"}} > */}
-                    {/* <svg width={550} height={svgHeight} style={{backgroundColor: "#dde"}} > */}
-                    {/* 固定か可変、どちらがいいかまだ検討不十分。 */}
+                <TransformComponent
+                    wrapperStyle={{width:"100%", height: "calc(-114px + 100vh)"}}
+                >
+                    {/* 上のcalcの"-114px"は、デザインが固まったら固定値を使う */}
+                    <svg width={svgWidth} height={svgHeight}>
                     {tableStructs.map((ts: TableStruct, i: number) => {
                         if (ts instanceof TableStructQuery) {
                             return (
@@ -108,6 +110,7 @@ function LineageCanvas({ astList }: LineageCanvasProps) {
                     </svg>
                 </TransformComponent>
             </TransformWrapper>
+            </div>
         </div>
     );
 }
