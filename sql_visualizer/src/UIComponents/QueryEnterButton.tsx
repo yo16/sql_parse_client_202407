@@ -40,9 +40,13 @@ function QueryEnterButton({onEnterQuery, defaultQuery=""}: QueryEnterButtonProps
 
     const entryArea: ReactNode = (
         <div
-            className="fixed top-0 left-0 w-full h-full flex items-center justify-center dark-overlay"
+            style={{
+                position:"fixed", top:0, left: 0, width:"100%", height:"100%",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                backgroundColor: "rgba(0,0,0,0.5)",
+            }}
             onClick={()=>handleShowEntryDialog(false)}
-        >
+        >{/* className="fixed top-0 left-0 w-full h-full flex items-center justify-center dark-overlay" */}
             <div
                 className="query-input-area"
                 onClick={(e)=>e.stopPropagation()}
