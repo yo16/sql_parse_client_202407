@@ -54,6 +54,7 @@ function Contents() {
                     // resultが0（正常）でない場合は、常にエラーを投げる
                     throw new Error(`Server error. ${json.message}`);
                 }
+                setAstList(json.ast);
             })
             .catch((e) => {
                 console.error("Fetch Error", e);
